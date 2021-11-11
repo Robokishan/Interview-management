@@ -1,0 +1,20 @@
+/build
+node_modules
+package-lock.json
+/build
+.idea/*
+.DS_Store
+.DS_Store
+.firebase/*
+firebase-debug.log
+.DS_Store
+.firebase/hosting.YnVpbGQ.cache
+*.cache
+.firebase/*.cache
+
+.firebase/hosting.YnVpbGQ.cache
+.firebase/
+.env
+
+# Local Netlify folder
+.netlify

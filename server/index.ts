@@ -28,7 +28,6 @@ async function main() {
   let originList = [
     "http://localhost:5050",
     "http://localhost:3000",
-    "https://formbuilder-frontend.netlify.app",
   ];
 
   // Construct a schema, using GraphQL schema language

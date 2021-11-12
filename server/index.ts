@@ -1,14 +1,15 @@
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
-import dotenv = require('dotenv');
-import config from './config/config';
-import express from "./config/express"
+import dotenv = require("dotenv");
+import config from "./config/config";
+import express from "./config/express";
 
 // new methods
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { createConnection, Connection } from "typeorm";
+import { Connection, IDatabaseDriver, MikroORM } from '@mikro-orm/core';
+import { MongoDriver } from '@mikro-orm/mongodb';
 import "dotenv-safe/config";
 
 import path from "path";
@@ -20,6 +21,7 @@ import { UserResolver } from "./controllers/typeGraphqlResolvers/UserResolver";
 import { FormAnsResolver } from "./controllers/typeGraphqlResolvers/FormAnsResolver";
 import { Context } from "./types/Context";
 import cors, { CorsOptions } from "cors";
+import colors from "colors";
 import { customAuthChecker } from "./utils/ts/AuthCheker";
 
 async function main() {
@@ -28,19 +30,20 @@ async function main() {
   let originList = [
     "http://localhost:5050",
     "http://localhost:3000",
+    "https://formbuilder-frontend.netlify.app",
   ];
 
   // Construct a schema, using GraphQL schema language
 
-  const connection: Connection = await createConnection({
-    type: "mongodb",
-    logging: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    url: process.env.MONGODB_URL,
-    migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [Forms, formanswers, Users],
-  });
+// make sure to provide the MongoDriver type hint
+const orm = await MikroORM.init<MongoDriver>({
+  entities: [Author, Book, ...],
+  clientUrl: 'mongodb://localhost:27017,localhost:27018,localhost:27019/my-db-name?replicaSet=rs0',
+  type: 'mongo',
+  implicitTransactions: true, // defaults to false
+});
+
+await orm.em.getDriver().createCollections();
 
   //   await connection.connect();
 
@@ -65,30 +68,14 @@ async function main() {
     origin: originList,
     credentials: true, // <-- REQUIRED backend setting
   };
-  // app.use(cors(corsOptions));
+  app.use(cors(corsOptions));
   server.applyMiddleware({
     app,
-    cors: corsOptions,
+    cors:false
   });
 
   // Start listening
   app.listen(config.PORT, function () {
-    if (process.env.NODE_ENV != "proudction") {
-      var table = new Table({ head: ["", "APi", "Method"] });
-      var routeList = listEndpoints(app);
-      routeList.forEach((link: any, index: any) => {
-        let method_message = "";
-        for (let i = 0; i < link.methods.length; i++) {
-          method_message += link.methods[i];
-          if (link.methods.length > 1 && i < link.methods.length - 1) {
-            method_message += ", ";
-          }
-        }
-        table.push([index, link.path, colors.red(method_message)]);
-      });
-      console.log(table.toString());
-      console.log("********************************************\n");
-    }
     console.log(
       colors.green(
         "🚀  Listening with " +

@@ -5,15 +5,12 @@ package-lock.json
 .idea/*
 .DS_Store
 .DS_Store
-.firebase/*
+.firebase
 firebase-debug.log
 .DS_Store
-.firebase/hosting.YnVpbGQ.cache
-*.cache
-.firebase/*.cache
 
-.firebase/hosting.YnVpbGQ.cache
-.firebase/
+*.cache
+
 .env
 
 # Local Netlify folder

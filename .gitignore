@@ -2,6 +2,7 @@
 node_modules
 package-lock.json
 /build
+dist
 .idea/*
 .DS_Store
 .DS_Store

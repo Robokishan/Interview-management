@@ -2,13 +2,16 @@ import { Content } from 'carbon-components-react';
 import React, { ReactElement } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import SideNavWithHeader from '../components/Header';
+import useWindowDimensions from '../hooks/useWindowDimensions';
 import { routes } from '../routes';
 interface Props {}
 
 export default function Admin({}: Props): ReactElement {
     const style = {
         height: '100%',
+        width: '100%',
     };
+    const { height, width } = useWindowDimensions();
 
     const getRoutes = routeList =>
         routeList.map((prop, key) => {
@@ -40,12 +43,16 @@ export default function Admin({}: Props): ReactElement {
         <div
             className="container"
             style={{
-                padding: '3em',
+                paddingTop: '3em',
+                paddingLeft: width ? (width <= 672 ? '0' : '3em') : '3em',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
             }}>
-            <SideNavWithHeader sideBarList={getSideBarList(routes)} />
+            <SideNavWithHeader
+                isRail={width ? (width <= 672 ? false : true) : false}
+                sideBarList={getSideBarList(routes)}
+            />
             <Content id="main-content" style={style}>
                 <Switch>
                     {getRoutes(routes)}

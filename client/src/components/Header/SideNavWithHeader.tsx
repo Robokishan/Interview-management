@@ -26,13 +26,14 @@ const Fade16 = () => (
 
 interface Props {
     sideBarList: RouteType[];
+    isRail: boolean;
 }
 
 export default function SideNavWithHeader({
     sideBarList,
+    isRail,
 }: Props): React.ReactElement {
     // TODO: Instead of hooks try to use styled component
-    const { height, width } = useWindowDimensions();
 
     return (
         <HeaderContainer
@@ -49,9 +50,7 @@ export default function SideNavWithHeader({
                             Placement
                         </HeaderName>
                         <SideNav
-                            isRail={
-                                width ? (width <= 672 ? false : true) : false
-                            }
+                            isRail={isRail}
                             aria-label="Side navigation"
                             expanded={isSideNavExpanded}>
                             <SideNavItems>

@@ -140,48 +140,53 @@ export default function SInterviewList({
     showHeaders = true,
 }: Props): ReactElement {
     return (
-        <div>
-            {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}
-            <DataTable rows={rows} headers={headers}>
-                {({
-                    rows,
-                    headers,
-                    getTableProps,
-                    getHeaderProps,
-                    getRowProps,
-                }) => (
-                    <Table {...getTableProps()}>
-                        <TableHead>
-                            <TableRow>
-                                {headers.map(header => (
-                                    <TableHeader
-                                        {...getHeaderProps({ header })}>
-                                        {header.header}
-                                    </TableHeader>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map(row => (
-                                <TableRow {...getRowProps({ row })}>
-                                    {row.cells.map(cell => (
-                                        <TableCell key={cell.id}>
-                                            {cell.value}
-                                        </TableCell>
+        <>
+            <div className="bx--grid--full-width">
+                <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                    {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}
+                    <DataTable rows={rows} headers={headers}>
+                        {({
+                            rows,
+                            headers,
+                            getTableProps,
+                            getHeaderProps,
+                            getRowProps,
+                        }) => (
+                            <Table width="800px" {...getTableProps()}>
+                                <TableHead>
+                                    <TableRow>
+                                        {headers.map(header => (
+                                            <TableHeader
+                                                {...getHeaderProps({
+                                                    header,
+                                                })}>
+                                                {header.header}
+                                            </TableHeader>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.map(row => (
+                                        <TableRow {...getRowProps({ row })}>
+                                            {row.cells.map(cell => (
+                                                <TableCell key={cell.id}>
+                                                    {cell.value}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
                                     ))}
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                )}
-            </DataTable>
-            {/* TODO: Populate pagination data */}
-            <Pagination
-                pageSize={10}
-                pageSizes={[10, 20, 30, 40, 50]}
-                onChange={e => console.log('Pagination', e)}
-            />
-            <br />
-        </div>
+                                </TableBody>
+                            </Table>
+                        )}
+                    </DataTable>
+                    {/* TODO: Populate pagination data */}
+                    <Pagination
+                        pageSize={10}
+                        pageSizes={[10, 20, 30, 40, 50]}
+                        onChange={e => console.log('Pagination', e)}
+                    />
+                </div>
+            </div>
+        </>
     );
 }

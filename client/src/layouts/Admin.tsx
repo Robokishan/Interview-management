@@ -44,7 +44,7 @@ export default function Admin({}: Props): ReactElement {
             className="container"
             style={{
                 paddingTop: '3em',
-                paddingLeft: width ? (width <= 672 ? '0' : '3em') : '3em',
+                paddingLeft: width ? (width <= 672 ? '0' : '3em') : '3em', //just to make it responsive todo: make it more efficient remove it from react
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',

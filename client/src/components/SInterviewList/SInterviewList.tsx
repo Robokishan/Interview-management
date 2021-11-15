@@ -143,6 +143,7 @@ export default function SInterviewList({
         <>
             <div className="bx--grid--full-width">
                 <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                    {/* TODO: USE IT WHEN FETCHING DATA FROM GRAPHQL */}
                     {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}
                     <DataTable rows={rows} headers={headers}>
                         {({

@@ -31,7 +31,8 @@ ReactDOM.render(
         <Switch>
             <UrqlProvider value={client}>
                 <ToastContainer hideProgressBar />
-                <Protectedroute path="/admin" component={AdminLayout} />
+                <Route path="/admin" component={AdminLayout} />
+                {/* <Protectedroute path="/admin" component={AdminLayout} /> */}
                 <Route
                     path="/auth"
                     render={props => <AuthLayout {...props} />}

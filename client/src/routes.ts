@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import AnotherContent from "./components/AnotherContent";
 import MainContent from "./components/MainContent";
-
+import Login from "./components/Login"
 interface RouteType {
   show: boolean,
   path: string,
@@ -44,13 +44,14 @@ const routes: RouteType[] = [
 //     component: PublicForm,
 //     layout: '/public',
 //   },
-//   {
-//     path: '/login',
-//     name: 'Login',
-//     icon: 'ni ni-key-25 text-info',
-//     component: Login,
-//     layout: '/auth',
-//   },
+  {
+    show:false,
+    path: '/login',
+    name: 'Login',
+    icon: 'ni ni-key-25 text-info',
+    component: Login,
+    layout: '/auth',
+  },
 ];
 export { routes, RouteType };
 

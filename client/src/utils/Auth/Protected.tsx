@@ -6,6 +6,7 @@ import storage from '../storage/storage';
 function CheckAuthentication() {
   // Checks Authentication from stored localstorage
   const token = storage.getToken();
+  console.log("Token",token)
   if (token !== null && token !== '') {
     return true;
   }

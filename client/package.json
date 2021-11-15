@@ -12,8 +12,10 @@
     },
     "dependencies": {
         "@carbon/icons-react": "10.43.0",
+        "@carbon/themes": "^10.47.0",
         "@types/carbon-components-react": "^7.46.0",
         "@types/carbon__icons-react": "^10.31.2",
+        "@types/carbon__themes": "^0.0.1",
         "carbon-components": "10.48.0",
         "carbon-components-react": "^7.47.2",
         "carbon-icons": "7.0.7",

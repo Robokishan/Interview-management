@@ -1,6 +1,8 @@
 
 # Campus placement using ReactTS + Graphql + NodeTS + MikroORM | TypeORM (not decided yet) + Possibly mongodb
 
+Design guideline used carbon-design-system by IBM
+
 
 Project is regarding campus placement system for interviews
 

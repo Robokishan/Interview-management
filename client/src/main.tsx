@@ -15,29 +15,36 @@ import AdminLayout from './layouts/Admin';
 import AuthLayout from './layouts/Auth';
 // import './style.css';
 import 'react-toastify/dist/ReactToastify.css';
-import "./main.scss"
+import './main.scss';
 // import Public from './layouts/Public';
-// import Registration from './views/v1/Registration';
+import Registration from './components/Registration';
 
 const client = createClient({
-  url: 'http://localhost:5050/graphql',
-  fetchOptions: {
-    credentials: 'include',
-  },
+    url: 'http://localhost:5050/graphql',
+    fetchOptions: {
+        credentials: 'include',
+    },
 });
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-        <UrqlProvider value={client}>
-          <ToastContainer hideProgressBar />
-          <Protectedroute path="/admin" component={AdminLayout} />
-          <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-          {/* <Route path="/public" render={(props) => <Public {...props} />} /> */}
-          {/* <Route path="/" exact render={(props) => <Registration {...props} />} /> */} 
-          <Redirect exact path="/"  to="/admin/forms" />
-        </UrqlProvider>
-    </Switch>
-  </BrowserRouter>,
-  document.getElementById('root'),
+    <BrowserRouter>
+        <Switch>
+            <UrqlProvider value={client}>
+                <ToastContainer hideProgressBar />
+                <Protectedroute path="/admin" component={AdminLayout} />
+                <Route
+                    path="/auth"
+                    render={props => <AuthLayout {...props} />}
+                />
+                {/* <Route path="/public" render={(props) => <Public {...props} />} /> */}
+                <Route
+                    path="/"
+                    exact
+                    render={props => <Registration {...props} />}
+                />
+                {/* <Redirect exact path="/" to="/admin/forms" /> */}
+            </UrqlProvider>
+        </Switch>
+    </BrowserRouter>,
+    document.getElementById('root'),
 );

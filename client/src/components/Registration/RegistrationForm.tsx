@@ -97,7 +97,7 @@ export default function RegistrationForm({}: Props): ReactElement {
                         {...PasswordProps}
                     />
                 </div>
-                <div style={{ marginTop: '2rem', width: 400 }}>
+                <div style={{ marginTop: '2rem' }}>
                     <Dropdown
                         id="default"
                         titleText="Who am i?"
@@ -112,6 +112,7 @@ export default function RegistrationForm({}: Props): ReactElement {
                     style={{
                         display: 'flex',
                         width: '300px',
+                        justifyContent: 'space-between',
                         marginTop: '2rem',
                     }}>
                     {isSubmitting || success ? (
@@ -129,7 +130,7 @@ export default function RegistrationForm({}: Props): ReactElement {
                     <Button
                         kind="secondary"
                         onClick={e => history.push('/auth/login')}>
-                        or Login
+                        Login
                     </Button>
                 </div>
             </Form>

@@ -5,6 +5,7 @@ import SInterviewList from './components/SInterviewList';
 
 import Login from './components/Login';
 import Profile from './components/Profile';
+import CreateInterviewForm from './components/CreateInterview';
 interface RouteType {
     show: boolean;
     path: string;
@@ -29,7 +30,7 @@ const routes: RouteType[] = [
         path: '/create',
         name: 'Create Form',
         icon: 'ni ni-bullet-list-67 text-red',
-        component: AnotherContent,
+        component: CreateInterviewForm,
         layout: '/admin',
     },
     {

@@ -1,6 +1,6 @@
 import { Grid, Row } from 'carbon-components-react';
 import React, { ReactElement, useState } from 'react';
-import RegistrationForm from './RegistrationForm';
+import ProfileForm from './ProfileForm';
 interface Props {}
 
 const TextInputProps = {
@@ -24,7 +24,7 @@ const InvalidPasswordProps = {
         'Your password must be at least 6 characters as well as contain at least one uppercase, one lowercase, and one number.',
 };
 
-export default function Registration({}: Props): ReactElement {
+export default function Profile({}: Props): ReactElement {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [description, setDescription] = useState('Logging in...');
@@ -54,25 +54,16 @@ export default function Registration({}: Props): ReactElement {
 
     return (
         <>
-            <div
-                style={{
-                    paddingTop: '100px',
-                    // backgroundImage: "url('https://cloud.ibm.com/login/static/cache/2710b-1194401830/img/login_background.jpg')"
-                }}
-                className="main-content">
-                <div className="header bg-gradient-dark py-7 py-lg-8">
-                    <Grid>
-                        <div className="header-body text-center mb-7">
-                            <Row style={{ textAlign: 'center' }}>
-                                <div className="bx--col">
-                                    <h1 className="text-white">Registration</h1>
-                                </div>
-                            </Row>
+            <Grid>
+                <div className="header-body text-center mb-7">
+                    <Row style={{ textAlign: 'center' }}>
+                        <div className="bx--col">
+                            <h1 className="text-white">Profile</h1>
                         </div>
-                        <RegistrationForm />
-                    </Grid>
+                    </Row>
                 </div>
-            </div>
+                <ProfileForm />
+            </Grid>
         </>
     );
 }

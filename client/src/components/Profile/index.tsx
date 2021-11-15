@@ -1,2 +1,2 @@
-import Registration from './Registration';
-export default Registration;
+import Profile from './Profile';
+export default Profile;

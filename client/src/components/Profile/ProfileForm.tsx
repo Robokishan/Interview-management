@@ -1,14 +1,18 @@
 import {
     Button,
+    Column,
     Dropdown,
     Form,
     Grid,
     InlineLoading,
+    Row,
     TextInput,
+    Tooltip,
 } from 'carbon-components-react';
 
 import React, { ReactElement, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 const TextInputProps = {
     id: 'email',
     labelText: 'Email',
@@ -42,7 +46,7 @@ const items = [
     },
 ];
 
-export default function RegistrationForm({}: Props): ReactElement {
+export default function ProfileForm({}: Props): ReactElement {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [description, setDescription] = useState('Processing...');
@@ -50,6 +54,8 @@ export default function RegistrationForm({}: Props): ReactElement {
         'off' | 'assertive' | 'polite' | undefined
     >('off');
     const history = useHistory();
+
+    const { width, height } = useWindowDimensions();
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -60,7 +66,7 @@ export default function RegistrationForm({}: Props): ReactElement {
         setTimeout(() => {
             setIsSubmitting(false);
             setSuccess(true);
-            setDescription('Registration Done!');
+            setDescription('Done!');
 
             // To make submittable again, we reset the state after a bit so the user gets completion feedback
             setTimeout(() => {
@@ -76,8 +82,23 @@ export default function RegistrationForm({}: Props): ReactElement {
     };
 
     return (
-        <Grid className="bx--col-md-4 bx--col-lg-6">
+        <Grid className="bx--col-md-4 bx--col-lg-7">
             <Form onSubmit={handleSubmit}>
+                <div style={{ marginTop: '2rem' }}>
+                    <Row>
+                        <Column style={{ marginTop: '2rem' }} lg={8}>
+                            <TextInput
+                                type="text"
+                                id="username"
+                                labelText="Username"
+                                placeholder="Username"
+                            />
+                        </Column>
+                        <Column style={{ marginTop: '2rem' }} lg={8}>
+                            <TextInput type="email" {...TextInputProps} />
+                        </Column>
+                    </Row>
+                </div>
                 <div style={{ marginTop: '2rem' }}>
                     <TextInput
                         type="text"
@@ -85,9 +106,6 @@ export default function RegistrationForm({}: Props): ReactElement {
                         labelText="Name"
                         placeholder="Full Name"
                     />
-                </div>
-                <div style={{ marginTop: '2rem' }}>
-                    <TextInput type="email" {...TextInputProps} />
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                     <TextInput
@@ -100,6 +118,7 @@ export default function RegistrationForm({}: Props): ReactElement {
                 <div style={{ marginTop: '2rem' }}>
                     <Dropdown
                         id="default"
+                        disabled
                         titleText="Who am i?"
                         helperText="This is differentiate between student and interviewer"
                         label="Please select"
@@ -111,7 +130,9 @@ export default function RegistrationForm({}: Props): ReactElement {
                 <div
                     style={{
                         display: 'flex',
-                        width: '300px',
+                        width: '100%',
+                        flexWrap: 'wrap',
+                        gap: '2rem',
                         justifyContent: 'space-between',
                         marginTop: '2rem',
                     }}>
@@ -123,15 +144,10 @@ export default function RegistrationForm({}: Props): ReactElement {
                             aria-live={ariaLive}
                         />
                     ) : (
-                        <Button kind="primary" type="submit">
-                            Registration
+                        <Button kind="tertiary" type="submit">
+                            Save
                         </Button>
                     )}
-                    <Button
-                        kind="secondary"
-                        onClick={e => history.push('/auth/login')}>
-                        Login
-                    </Button>
                 </div>
             </Form>
         </Grid>

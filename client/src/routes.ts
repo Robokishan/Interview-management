@@ -4,6 +4,7 @@ import MainContent from './components/MainContent';
 import SInterviewList from './components/SInterviewList';
 
 import Login from './components/Login';
+import Profile from './components/Profile';
 interface RouteType {
     show: boolean;
     path: string;
@@ -44,12 +45,12 @@ const routes: RouteType[] = [
         path: '/profile',
         name: 'Profile',
         icon: 'ni ni-bullet-list-67 text-red',
-        component: AnotherContent,
+        component: Profile,
         layout: '/admin',
     },
     {
         show: true,
-        path: '/create',
+        path: '/new',
         name: 'Create Interview',
         icon: 'ni ni-bullet-list-67 text-red',
         component: AnotherContent,
@@ -57,7 +58,7 @@ const routes: RouteType[] = [
     },
     {
         show: true,
-        path: '/create',
+        path: '/interviewies',
         name: 'Interviewies',
         icon: 'ni ni-bullet-list-67 text-red',
         component: AnotherContent,
@@ -87,13 +88,13 @@ const routes: RouteType[] = [
     //     component: PublicForm,
     //     layout: '/public',
     //   },
-    // {
-    //     show: false,
-    //     path: '/login',
-    //     name: 'Login',
-    //     icon: 'ni ni-key-25 text-info',
-    //     component: Login,
-    //     layout: '/auth',
-    // },
+    {
+        show: false,
+        path: '/login',
+        name: 'Login',
+        icon: 'ni ni-key-25 text-info',
+        component: Login,
+        layout: '/auth',
+    },
 ];
 export { routes, RouteType };

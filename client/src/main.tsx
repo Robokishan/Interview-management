@@ -15,6 +15,7 @@ import AdminLayout from './layouts/Admin';
 // import AuthLayout from './layouts/Auth';
 // import './style.css';
 import 'react-toastify/dist/ReactToastify.css';
+import "./main.scss"
 // import Public from './layouts/Public';
 // import Registration from './views/v1/Registration';
 
@@ -30,10 +31,11 @@ ReactDOM.render(
     <Switch>
         <UrqlProvider value={client}>
           <ToastContainer hideProgressBar />
-          <Protectedroute path="/admin" component={AdminLayout} />
-          {/* <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-          <Route path="/public" render={(props) => <Public {...props} />} />
-          <Route path="/" exact render={(props) => <Registration {...props} />} /> */}
+          <Route path="/admin" component={AdminLayout} />
+          {/* <Protectedroute path="/admin" component={AdminLayout} /> */}
+          {/* <Route path="/auth" render={(props) => <AuthLayout {...props} />} /> */}
+          {/* <Route path="/public" render={(props) => <Public {...props} />} /> */}
+          {/* <Route path="/" exact render={(props) => <Registration {...props} />} /> */} 
           {/* <Redirect exact path="/"  to="/admin/forms" /> */}
         </UrqlProvider>
     </Switch>

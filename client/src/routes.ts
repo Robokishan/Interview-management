@@ -1,26 +1,33 @@
-// import Login from './views/v1/Login';
-// import FormLists from './views/v1/FormLists';
-// import CreateForm from './views/v1/CreateForm';
-// import Responses from './views/v1/Responses';
-// import PublicForm from './views/v1/PublicForm';
+import { ReactElement } from "react";
+import AnotherContent from "./components/AnotherContent";
+import MainContent from "./components/MainContent";
 
-const routes = [
-//   {
-//     show: true,
-//     path: '/forms',
-//     name: 'Forms',
-//     icon: 'ni ni-bullet-list-67 text-red',
-//     component: FormLists,
-//     layout: '/admin',
-//   },
-//   {
-//     show: true,
-//     path: '/create',
-//     name: 'Create Form',
-//     icon: 'ni ni-bullet-list-67 text-red',
-//     component: CreateForm,
-//     layout: '/admin',
-//   },
+interface RouteType {
+  show: boolean,
+  path: string,
+  name: string,
+  icon: string,
+  component: ({}) => ReactElement,
+  layout: string
+}
+
+const routes: RouteType[] = [
+  {
+    show: true,
+    path: '/forms',
+    name: 'Forms',
+    icon: 'ni ni-bullet-list-67 text-red',
+    component: MainContent,
+    layout: '/admin',
+  },
+  {
+    show: true,
+    path: '/create',
+    name: 'Create Form',
+    icon: 'ni ni-bullet-list-67 text-red',
+    component: AnotherContent,
+    layout: '/admin',
+  },
 //   {
 //     show: true,
 //     path: '/responses',
@@ -45,4 +52,5 @@ const routes = [
 //     layout: '/auth',
 //   },
 ];
-export default routes;
+export { routes, RouteType };
+

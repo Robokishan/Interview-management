@@ -6,6 +6,9 @@ import SInterviewList from './components/SInterviewList';
 import Login from './components/Login';
 import Profile from './components/Profile';
 import CreateInterviewForm from './components/CreateInterview';
+import Attending from './components/Attending';
+import Candidates from './components/Candidates';
+import CandidateProfile from './components/CandidateProfile';
 interface RouteType {
     show: boolean;
     path: string;
@@ -20,7 +23,7 @@ const routes: RouteType[] = [
     {
         show: true,
         path: '/forms',
-        name: 'Interviews',
+        name: 'Interviews[stud]',
         icon: 'ni ni-bullet-list-67 text-red',
         component: SInterviewList,
         layout: '/admin',
@@ -28,7 +31,7 @@ const routes: RouteType[] = [
     {
         show: true,
         path: '/create',
-        name: 'Create Form',
+        name: 'Create Interview',
         icon: 'ni ni-bullet-list-67 text-red',
         component: CreateInterviewForm,
         layout: '/admin',
@@ -38,7 +41,7 @@ const routes: RouteType[] = [
         path: '/list',
         name: 'Attending',
         icon: 'ni ni-bullet-list-67 text-red',
-        component: SInterviewList,
+        component: Attending,
         layout: '/admin',
     },
     {
@@ -49,20 +52,22 @@ const routes: RouteType[] = [
         component: Profile,
         layout: '/admin',
     },
+    // it is not show in sidebar because it is used as preview only
+    // may be we can use this component in modal also so that we  dont have to render page
     {
-        show: true,
-        path: '/new',
-        name: 'Create Interview',
+        show: false,
+        path: '/candidate',
+        name: 'Candidate Profile',
         icon: 'ni ni-bullet-list-67 text-red',
-        component: AnotherContent,
+        component: CandidateProfile,
         layout: '/admin',
     },
     {
         show: true,
-        path: '/interviewies',
-        name: 'Interviewies',
+        path: '/candidates',
+        name: 'Candidates',
         icon: 'ni ni-bullet-list-67 text-red',
-        component: AnotherContent,
+        component: Candidates,
         layout: '/admin',
     },
     {

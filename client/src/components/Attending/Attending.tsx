@@ -136,9 +136,7 @@ const headers = [
 interface Props {
     showHeaders?: boolean;
 }
-export default function InterviewieList({
-    showHeaders = true,
-}: Props): ReactElement {
+export default function Attending({ showHeaders = true }: Props): ReactElement {
     return (
         <div>
             {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}

@@ -8,7 +8,7 @@ import {
 } from 'carbon-components-react';
 
 import React, { ReactElement, useState } from 'react';
-
+import { useHistory } from 'react-router-dom';
 const TextInputProps = {
     id: 'email',
     labelText: 'Email',
@@ -49,6 +49,7 @@ export default function RegistrationForm({}: Props): ReactElement {
     const [ariaLive, setAriaLive] = useState<
         'off' | 'assertive' | 'polite' | undefined
     >('off');
+    const history = useHistory();
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -125,6 +126,11 @@ export default function RegistrationForm({}: Props): ReactElement {
                             Registration
                         </Button>
                     )}
+                    <Button
+                        kind="secondary"
+                        onClick={e => history.push('/auth/login')}>
+                        or Login
+                    </Button>
                 </div>
             </Form>
         </Grid>

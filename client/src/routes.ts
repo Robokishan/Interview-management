@@ -23,7 +23,7 @@ interface RouteType {
 const routes: RouteType[] = [
     {
         show: true,
-        path: '/forms',
+        path: '/interviews',
         name: 'Interviews[stud]',
         icon: 'ni ni-bullet-list-67 text-red',
         component: SInterviewList,

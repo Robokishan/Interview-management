@@ -54,12 +54,21 @@ class UserResponse {
 }
 
 @ObjectType()
+class RegistrationUser {
+  @Field()
+  name: string;
+
+  @Field()
+  email: string;
+}
+
+@ObjectType()
 class RegistrationResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
   @Field(() => UserAuth, { nullable: true })
-  user?: UserAuth;
+  user?: RegistrationUser;
 }
 
 @Resolver()
@@ -79,6 +88,7 @@ export class UserResolver {
     @Arg("options") options: RegistrationInput,
     @Ctx() { em, req, res }: Context
   ) {
+    console.log(options);
     //Registration Mutation
   }
 

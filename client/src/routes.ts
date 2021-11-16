@@ -9,6 +9,7 @@ import CreateInterviewForm from './components/CreateInterview';
 import Attending from './components/Attending';
 import Candidates from './components/Candidates';
 import CandidateProfile from './components/CandidateProfile';
+import InterviewList from './components/InterviewList';
 interface RouteType {
     show: boolean;
     path: string;
@@ -72,10 +73,10 @@ const routes: RouteType[] = [
     },
     {
         show: true,
-        path: '/create',
+        path: '/history',
         name: 'Created Interviews',
         icon: 'ni ni-bullet-list-67 text-red',
-        component: AnotherContent,
+        component: InterviewList,
         layout: '/admin',
     },
     //   {

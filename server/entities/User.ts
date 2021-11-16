@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Entity,
   PrimaryKey,
   Property,
@@ -7,11 +8,10 @@ import {
 } from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Field, InputType, ObjectType } from "type-graphql";
-import { BaseEntity } from "./BaseEntity";
 
 @ObjectType()
 @Entity()
-export class User extends BaseEntity {
+export class User extends BaseEntity<User, "_id"> {
   @Field(() => String)
   @PrimaryKey()
   _id!: ObjectId;

@@ -13,7 +13,9 @@ import { LoginInput, RegistrationInput, User } from "../../entities/User";
 // import { Users } from "../../models/typeormEnt/v1/User";
 import { Context } from "../../types/Context";
 import { createAccessToken, verifyPassword } from "../../utils/PasswordManager";
-
+import bcrypt from "bcrypt";
+import config from "../../config/config";
+const saltRounds = config.SALT_ROUNDS;
 @ObjectType()
 class Token {
   @Field()
@@ -74,8 +76,8 @@ class RegistrationResponse {
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
-  user() {
-    // return User.find();
+  async user(@Ctx() { em, req, res }: Context) {
+    return em.find(User, {});
   }
 
   @Query(() => String)
@@ -88,8 +90,49 @@ export class UserResolver {
     @Arg("options") options: RegistrationInput,
     @Ctx() { em, req, res }: Context
   ) {
-    console.log(options);
-    //Registration Mutation
+    const user = new User();
+    user.name = options.name;
+    user.email = options.email;
+    user.details = options.details;
+    user.username = options.username;
+
+    bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+      if (err) res.status(400).json({ message: `Something went wrong ${err}` });
+      else {
+        user.password = hash;
+        return {
+          user: {
+            name: user.name,
+            email: user.email,
+          },
+        } as RegistrationResponse;
+      }
+
+      if (err) {
+        return {
+          errors: [
+            {
+              field: "email",
+              message: "Somthing went wrong",
+            },
+          ],
+        };
+      } else {
+        // const accesstoken = createAccessToken(user);
+        // res.cookie("token", accesstoken, {
+        //   // expires: new Date(Date.now() + expiration),
+        //   secure: false, // set to true if your using https
+        //   httpOnly: true,
+        // });
+        user.password = hash;
+        return {
+          user: {
+            name: user.name,
+            email: user.email,
+          },
+        } as RegistrationResponse;
+      }
+    });
   }
 
   @Mutation(() => UserResponse)

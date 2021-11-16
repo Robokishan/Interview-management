@@ -10,7 +10,7 @@ interface Verified {
 
 function verifyPassword(password: string, user: any): Promise<Verified> {
   return new Promise(function (resolve, reject) {
-    bcrypt.compare(password, user.password, function (err, result) {
+    bcrypt.compare(password, user.password, function (err: any, result: any) {
       if (err) {
         reject(err);
       } else {
@@ -20,7 +20,7 @@ function verifyPassword(password: string, user: any): Promise<Verified> {
   });
 }
 
-const createAccessToken = (user): string => {
+const createAccessToken = (user: any): string => {
   return sign(
     {
       userId: user.id,

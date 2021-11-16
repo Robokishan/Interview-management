@@ -1,0 +1,28 @@
+mutation registration(
+    $email: String!
+    $password: String!
+    $name: String!
+    $details: String!
+    $username: String!
+    $type: String!
+) {
+    registration(
+        options: {
+            email: $email
+            password: $password
+            name: $name
+            details: $details
+            username: $username
+            type: $type
+        }
+    ) {
+        errors {
+            message
+            field
+        }
+        user {
+            email
+            name
+        }
+    }
+}

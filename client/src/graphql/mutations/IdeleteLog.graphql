@@ -1,0 +1,3 @@
+mutation IdeleteLog($ideleteLogId: String!) {
+    IdeleteLog(id: $ideleteLogId)
+}

@@ -1,0 +1,6 @@
+mutation IcreateInterview($options: InterviewInput!) {
+    IcreateInterview(options: $options) {
+        title
+        id
+    }
+}

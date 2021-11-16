@@ -1,0 +1,3 @@
+mutation SapplyForInterview($sapplyForInterviewId: String!) {
+    SapplyForInterview(interviewId: $sapplyForInterviewId)
+}

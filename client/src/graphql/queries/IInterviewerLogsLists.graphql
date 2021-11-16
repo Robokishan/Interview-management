@@ -1,0 +1,6 @@
+query IInterviewerLogsLists {
+    IInterviewerLogsLists {
+        id
+        student_id
+    }
+}

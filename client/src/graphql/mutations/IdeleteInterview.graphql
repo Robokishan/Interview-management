@@ -1,0 +1,3 @@
+mutation IdeleteInterview($deleteInterviewId: String!) {
+    IdeleteInterview(id: $deleteInterviewId)
+}

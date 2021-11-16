@@ -1,0 +1,3 @@
+mutation SejectFromInterview($sejectFromInterviewId: String!) {
+    SejectFromInterview(id: $sejectFromInterviewId)
+}

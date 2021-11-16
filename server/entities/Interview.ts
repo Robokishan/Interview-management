@@ -21,7 +21,7 @@ export class Interview extends BaseEntity<Interview, "_id"> {
 
   @Field()
   @Property()
-  ownerId!: string;
+  owner_id!: string;
 
   @Field()
   @Property()

@@ -39,9 +39,10 @@ export const customAuthChecker: AuthChecker = async (
         owner: decoded,
       };
     } catch (Err) {
-      console.log("Err", Err);
+      console.error("Err", Err);
     }
   }
+
   if (!!!token) throw new Error("Authorization error");
   return !!token;
 };

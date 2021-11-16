@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import {
   Arg,
+  Authorized,
   Ctx,
   Field,
   InputType,
@@ -58,10 +59,10 @@ class UserResponse {
 @ObjectType()
 class RegistrationUser {
   @Field()
-  name: string;
+  name?: string;
 
   @Field()
-  email: string;
+  email?: string;
 }
 
 @ObjectType()
@@ -69,20 +70,29 @@ class RegistrationResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
-  @Field(() => UserAuth, { nullable: true })
+  @Field(() => RegistrationUser, { nullable: true })
   user?: RegistrationUser;
 }
 
 @Resolver()
 export class UserResolver {
+  // NOTE: FOR TESTING PURPOSE ONLY
+  @Authorized()
   @Query(() => [User])
   async user(@Ctx() { em, req, res }: Context) {
     return em.find(User, {});
   }
 
-  @Query(() => String)
-  callString() {
-    return "hello world";
+  // TODO: FOR TESTING PURPOSE ONLY
+  @Authorized()
+  @Mutation(() => Boolean)
+  async deleteUser(
+    @Arg("id", () => String) id: string,
+    @Ctx() { em, req, res }: Context
+  ) {
+    const user = await em.getRepository(User).findOneOrFail({ id });
+    await em.getRepository(User).removeAndFlush(user);
+    return true;
   }
 
   @Mutation(() => RegistrationResponse)
@@ -95,20 +105,43 @@ export class UserResolver {
     user.email = options.email;
     user.details = options.details;
     user.username = options.username;
+    user.type = options.type;
 
-    bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-      if (err) res.status(400).json({ message: `Something went wrong ${err}` });
-      else {
-        user.password = hash;
-        return {
-          user: {
-            name: user.name,
-            email: user.email,
+    try {
+      const hashedPassword = bcrypt.hashSync(options.password, saltRounds);
+      user.password = hashedPassword;
+      const userReposistory = em.getRepository(User);
+      await userReposistory.persist(user).flush();
+
+      return {
+        user: {
+          name: options.name,
+          email: options.email,
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        errors: [
+          {
+            field: "email",
+            message: "Somthing went wrong",
           },
-        } as RegistrationResponse;
-      }
+        ],
+      };
+    }
+  }
 
-      if (err) {
+  @Mutation(() => UserResponse)
+  async login(
+    @Arg("options") options: LoginInput,
+    @Ctx() { em, req, res }: Context
+  ) {
+    const userReposistory = em.getRepository(User);
+    const user = await userReposistory.findOne({ email: options.email });
+    try {
+      const { isValid } = await verifyPassword(options.password, user);
+      if (isValid != true && user == null) {
         return {
           errors: [
             {
@@ -118,72 +151,38 @@ export class UserResolver {
           ],
         };
       } else {
-        // const accesstoken = createAccessToken(user);
-        // res.cookie("token", accesstoken, {
-        //   // expires: new Date(Date.now() + expiration),
-        //   secure: false, // set to true if your using https
-        //   httpOnly: true,
-        // });
-        user.password = hash;
+        const accesstoken = createAccessToken(user);
+
+        // NOTE: Make sure cookie params are properly set so that it can work with studio.apollographql.com
+        res.cookie("token", accesstoken, {
+          // expires: new Date(Date.now() + expiration),
+          secure: true, // set to true if your using https
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+          // httpOnly: true,
+          // secure: true,
+          sameSite: "none",
+        });
         return {
           user: {
-            name: user.name,
-            email: user.email,
+            name: user?.name,
+            email: user?.email,
+            token: {
+              access_token: accesstoken,
+              expires_in: (jwt.decode(accesstoken) as any).exp,
+            },
           },
-        } as RegistrationResponse;
+        };
       }
-    });
-  }
-
-  @Mutation(() => UserResponse)
-  async login(
-    @Arg("options") options: LoginInput,
-    @Ctx() { req, res }: Context
-  ) {
-    // const user = await Users.findOne({ email: options.email });
-    // const { isValid } = await verifyPassword(options.password, user);
-    // if (isValid != true) {
-    //   return {
-    //     errors: [
-    //       {
-    //         field: "email",
-    //         message: "Somthing went wrong",
-    //       },
-    //     ],
-    //   };
-    // } else {
-    //   const accesstoken = createAccessToken(user);
-    //   res.cookie("token", accesstoken, {
-    //     // expires: new Date(Date.now() + expiration),
-    //     secure: false, // set to true if your using https
-    //     httpOnly: true,
-    //   });
-    //   return {
-    //     user: {
-    //       name: user.name,
-    //       email: user.email,
-    //       token: {
-    //         access_token: accesstoken,
-    //         expires_in: (jwt.decode(accesstoken) as any).exp,
-    //       },
-    //     },
-    //   };
-    // return res
-    //   .cookie("token", accesstoken, {
-    //     // expires: new Date(Date.now() + expiration),
-    //     secure: false, // set to true if your using https
-    //     httpOnly: true,
-    //   })
-    //   .status(200)
-    //   .json({
-    //     // "userId": result.userId,
-    //     name: user.name,
-    //     email: user.email,
-    //     token: {
-    //       access_token: accesstoken,
-    //       expires_in: jwt.decode(accesstoken).exp,
-    //       token_type: "bearer",
-    //     },
-    //   });
+    } catch (error) {
+      return {
+        errors: [
+          {
+            field: "email",
+            message: (error as Error).message,
+          },
+        ],
+      };
+    }
   }
 }

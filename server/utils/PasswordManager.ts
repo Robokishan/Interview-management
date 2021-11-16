@@ -1,6 +1,7 @@
 import { sign } from "jsonwebtoken";
-var bcrypt = require("bcrypt");
-var config = require("../../config/config");
+
+import bcrypt from "bcrypt";
+import config from "../config/config";
 
 interface Verified {
   isValid: boolean;
@@ -21,11 +22,13 @@ function verifyPassword(password: string, user: any): Promise<Verified> {
 }
 
 const createAccessToken = (user: any): string => {
+  console.log(user);
   return sign(
     {
       userId: user.id,
       email: user.email,
       user_name: user.user_name,
+      type: user.type,
     },
     config.SECRET,
     {

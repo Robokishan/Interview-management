@@ -15,15 +15,15 @@ export class Logs extends BaseEntity<Logs, "_id"> {
   @PrimaryKey()
   _id!: ObjectId;
 
-  @Field()
+  @Field(() => String)
   @SerializedPrimaryKey()
   id!: string;
 
   @Field()
   @Property()
-  owner_id!: string;
+  interview_id!: string;
 
   @Field()
   @Property()
-  asset_id!: string;
+  student_id!: string;
 }

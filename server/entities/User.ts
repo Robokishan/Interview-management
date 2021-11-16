@@ -11,6 +11,7 @@ import { Field, InputType, ObjectType } from "type-graphql";
 
 @ObjectType()
 @Entity()
+@Unique({ properties: ["username", "email"] })
 export class User extends BaseEntity<User, "_id"> {
   @Field(() => String)
   @PrimaryKey()
@@ -25,13 +26,13 @@ export class User extends BaseEntity<User, "_id"> {
   name!: string;
 
   @Field(() => String)
-  @Unique()
   @Property()
+  @Unique()
   username!: string;
 
   @Field(() => String)
-  @Unique()
   @Property()
+  @Unique()
   email!: string;
 
   @Field(() => String)
@@ -44,7 +45,7 @@ export class User extends BaseEntity<User, "_id"> {
 
   @Field(() => String)
   @Property()
-  type!: ["student", "interviewer"];
+  type!: "student" | "interviewer";
 
   @Field()
   @Property()
@@ -73,7 +74,7 @@ export class RegistrationInput {
   details!: string;
 
   @Field(() => String)
-  type!: ["student", "interviewer"];
+  type!: "student" | "interviewer";
 }
 
 @InputType()

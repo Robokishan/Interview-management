@@ -27,6 +27,9 @@ async function main() {
   var app = express();
   let originList = ["http://localhost:5050", "http://localhost:3000"];
 
+  if (process.env.NODE_ENV == "development")
+    originList.push("https://studio.apollographql.com");
+
   // Construct a schema, using GraphQL schema language
 
   // make sure to provide the MongoDriver type hint
@@ -65,6 +68,7 @@ async function main() {
     origin: originList,
     credentials: true, // <-- REQUIRED backend setting
   };
+  // app.set("trust proxy", process.env.NODE_ENV !== "production");
   app.use(cors(corsOptions));
   server.applyMiddleware({
     app,

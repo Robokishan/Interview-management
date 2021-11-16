@@ -1,108 +1,102 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Field,
+  InputType,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from "type-graphql";
 // import { getMongoRepository } from "typeorm";
 // import { formanswers } from "../../models/typeormEnt/v1/FormAns";
 // import { Forms } from "../../models/typeormEnt/v1/Forms";
 import { Context } from "../../types/Context";
 import { ObjectID } from "mongodb";
 import { Logs } from "../../entities/Logs";
+import { Interview } from "../../entities/Interview";
+import { User } from "../../entities/User";
 
 @Resolver()
 export class LogsResolver {
   @Authorized()
   @Query(() => [Logs])
-  async answers(@Ctx() { req, res }: Context) {
+  async IInterviewerLogsLists(@Ctx() { em, req, res }: Context) {
     const userId = req.userId;
 
-    // #1 : mongoose method
-    // try {
-    //   const assets = await Asset.find({ user_id: userId }).lean().exec();
-    //   const ids = assets.map((asset) => asset._id);
-    //   let answers = await Answer.find({ form_id: { $in: ids } })
-    //     .lean()
-    //     .exec();
-    //   for (let answer of answers) {
-    //     let asset = await Asset.findOne({
-    //       user_id: userId,
-    //       _id: answer.form_id,
-    //     }).exec();
-    //     answer["title"] = asset["title"];
-    //     answer["description"] = asset["description"];
-    //   }
-    //   console.log(answers);
-    //   return answers;
-    // } catch (err) {
-    //   console.error("Form Answer error", err);
-    // }
+    try {
+      const interviewRepository = em.getRepository(Interview);
+      const logRepository = em.getRepository(Logs);
 
-    // #2 using mongorepository
-    // found getMongomanager vs getMongoRepository
+      const interviews = await interviewRepository.aggregate([
+        {
+          $match: { owner_id: userId },
+        },
+        {
+          $addFields: {
+            id: { $toString: "$_id" },
+          },
+        },
+      ]);
 
-    // try {
-    //   let assetManager = getMongoRepository(Forms);
-    //   let answerManager = getMongoRepository(formanswers);
+      const ids = interviews.map((asset) => asset.id);
 
-    //   const assets = await assetManager
-    //     .aggregate([
-    //       {
-    //         $match: { user_id: userId },
-    //       },
-    //       {
-    //         $addFields: {
-    //           id: { $toString: "$_id" },
-    //         },
-    //       },
-    //     ])
-    //     .toArray();
+      let logs = await logRepository.find({ interview_id: { $in: ids } });
+      const studentIds = logs.map((_log) => _log.student_id);
+      let students = await em
+        .getRepository(User)
+        .find({ id: { $in: studentIds } });
 
-    //   const ids = assets.map((asset) => asset.id);
-    //   let answers = await answerManager.find({
-    //     where: { form_id: { $in: ids } },
-    //   });
+      const InterviewLogsList = logs.map((log) => {
+        let _interview = interviews.filter(
+          (interview) => interview.id == log.interview_id
+        )[0];
 
-    //   return answers;
-    // } catch (error) {
-    //   console.log("Error", error);
-    // }
+        _interview = {
+          ..._interview,
+          student: students
+            .filter((student) => student.id == log.student_id)[0]
+            .toJSON(),
+        };
+
+        return _interview;
+      });
+
+      return logs;
+    } catch (error) {
+      console.log("Error", error);
+      return [];
+    }
   }
 
   // There is a problem in this resolver
   // it does not gives multiple value like form and its answers usually
   // graphql does provide union type but i have to look into it
-
   @Authorized()
   @Query(() => Logs)
-  async answer(
-    @Arg("answerId") answerId: string,
-    @Ctx() { req, res }: Context
+  async IgetInterviewerLog(
+    @Arg("id") id: string,
+    @Ctx() { em, req, res }: Context
   ) {
-    // const userId = req.userId;
-    // // let formsManager = await getMongoRepository(Forms);
-    // let answerManager = await getMongoRepository(formanswers);
-    // let answer = await answerManager.findOne({
-    //   where: { _id: new ObjectID(answerId) },
-    // });
-    // // let asset = await formsManager.findOne({
-    // //   where: {
-    // //     user_id: userId,
-    // //     _id: new ObjectID(answer.form_id),
-    // //   },
-    // // });
-    // return answer;
+    const userId = req.userId;
+    // let formsManager = await getMongoRepository(Forms);
+    let logRepository = await em.getRepository(Logs);
+    let log = await logRepository.findOne({
+      id,
+    });
+
+    // TODO : ALSO RETURN STUDENT DETAIL IN FUTURE
+    return log;
   }
 
   // TODO: Untested code
+  // REJECT FOR INTERVIEW
   @Authorized()
-  @Mutation(() => Logs)
-  async deleteAnswer(
-    @Arg("answerid") answerId: string,
-    @Ctx() { req, res }: Context
-  ) {
-    // const userId = req.userId;
-    // let answerManager = await getMongoRepository(formanswers);
-    // let answer = await answerManager.findOne({
-    //   where: { _id: new ObjectID(answerId) },
-    // });
-    // answerManager.findOneAndDelete({ where: { _id: new ObjectID(answerId) } });
-    // return answer;
+  @Mutation(() => Boolean)
+  async IdeleteLog(@Arg("id") id: string, @Ctx() { em, req, res }: Context) {
+    const log = await em.getRepository(Logs).findOneOrFail({ id });
+    await em.getRepository(Logs).removeAndFlush(log);
+    return true;
   }
 }

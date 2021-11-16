@@ -1,6 +1,6 @@
 import { AuthChecker } from "type-graphql";
 import jwt from "jsonwebtoken";
-import config from "../../config/config";
+import config from "../config/config";
 export const customAuthChecker: AuthChecker = async (
   { root, args, context, info },
   roles

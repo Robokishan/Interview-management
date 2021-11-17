@@ -22,7 +22,11 @@ import { __prod__ } from "./utils/constant";
 async function main() {
   // Create server
   var app = express();
-  let originList = ["http://localhost:5050", "http://localhost:3000"];
+  let originList = [
+    "http://localhost:5050",
+    "http://localhost:5051",
+    "http://localhost:3000",
+  ];
 
   if (process.env.NODE_ENV == "development")
     originList.push("https://studio.apollographql.com");

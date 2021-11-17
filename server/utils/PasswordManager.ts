@@ -22,7 +22,6 @@ function verifyPassword(password: string, user: any): Promise<Verified> {
 }
 
 const createAccessToken = (user: any): string => {
-  console.log(user);
   return sign(
     {
       userId: user.id,

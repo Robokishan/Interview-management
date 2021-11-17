@@ -1,0 +1,34 @@
+#  docker-compose --env-file docker.env  up
+services:
+  server:
+    container_name: campus-backend
+    build: ./server/
+    image: cp-backend
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGODB_URL=${MONGODB_URL}
+    ports:
+      - "5050:8081"
+    depends_on:
+      - mongodb
+  client:
+    build: ./client/
+    container_name: campus-client
+    image: cp-client
+    ports:
+      - "5051:80"
+  mongodb:
+    image: docker.io/bitnami/mongodb:4.4
+    ports:
+      - "27017:27017"
+#     environment:
+#     - MONGODB_ROOT_USER=rooot
+#     - MONGODB_DATABASE=campus
+#     - MONGODB_ROOT_PASSWORD=password123
+#     volumes:
+#       - "mongodb_data:/bitnami/mongodb"
+# volumes:
+#   mongodb_data:
+
+version: "2.4"

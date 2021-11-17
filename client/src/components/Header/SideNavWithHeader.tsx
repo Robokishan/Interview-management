@@ -1,6 +1,9 @@
+import { Logout20 } from '@carbon/icons-react';
 import {
     Header,
     HeaderContainer,
+    HeaderGlobalAction,
+    HeaderGlobalBar,
     HeaderMenuButton,
     HeaderName,
     SideNav,
@@ -8,10 +11,10 @@ import {
     SideNavLink,
     SkipToContent,
 } from 'carbon-components-react';
-import React, { useEffect } from 'react';
-import { Link, LinkProps as RRLinkProps, Route } from 'react-router-dom';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { routes, RouteType } from '../../routes';
+import React from 'react';
+import { Link, LinkProps as RRLinkProps, useHistory } from 'react-router-dom';
+import { RouteType } from '../../routes';
+import storage from '../../utils/storage/storage';
 
 const Fade16 = () => (
     <svg
@@ -37,6 +40,7 @@ export default function SideNavWithHeader({
     headerName = 'Campus',
     headerTailName = 'Placement',
 }: Props): React.ReactElement {
+    const history = useHistory();
     // TODO: Instead of hooks try to use styled component
 
     return (
@@ -53,6 +57,18 @@ export default function SideNavWithHeader({
                         <HeaderName href="#" prefix={headerName}>
                             {headerTailName}
                         </HeaderName>
+
+                        <HeaderGlobalBar>
+                            <HeaderGlobalAction
+                                onClick={e => {
+                                    storage.removeUser();
+                                    history.push('/');
+                                }}
+                                aria-label="Search">
+                                <Logout20 />
+                            </HeaderGlobalAction>
+                        </HeaderGlobalBar>
+
                         <SideNav
                             isRail={isRail}
                             aria-label="Side navigation"

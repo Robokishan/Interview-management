@@ -18,10 +18,22 @@ import { Logs } from "../../entities/Logs";
 import { Interview } from "../../entities/Interview";
 import { User } from "../../entities/User";
 
+@ObjectType()
+class LogsResponse {
+  @Field(() => String)
+  id?: String;
+
+  @Field(() => Interview)
+  interview?: Interview;
+
+  @Field(() => User)
+  student?: User;
+}
+
 @Resolver()
 export class LogsResolver {
   @Authorized()
-  @Query(() => [Logs])
+  @Query(() => [LogsResponse])
   async IInterviewerLogsLists(@Ctx() { em, req, res }: Context) {
     const userId = req.userId;
 
@@ -52,9 +64,10 @@ export class LogsResolver {
         let _interview = interviews.filter(
           (interview) => interview.id == log.interview_id
         )[0];
-
+        // console.log("log", log);
         _interview = {
-          ..._interview,
+          id: log.id,
+          interview: _interview,
           student: students
             .filter((student) => student.id == log.student_id)[0]
             .toJSON(),
@@ -62,8 +75,53 @@ export class LogsResolver {
 
         return _interview;
       });
+      return InterviewLogsList;
+    } catch (error) {
+      console.log("Error", error);
+      return [];
+    }
+  }
 
-      return logs;
+  @Authorized()
+  @Query(() => [Interview])
+  async SInterviewerLogsLists(@Ctx() { em, req, res }: Context) {
+    const userId = req.userId;
+
+    try {
+      const userReposistory = em.getRepository(User);
+      const logRepository = em.getRepository(Logs);
+      const interviewRepository = em.getRepository(Interview);
+
+      const logsList = await logRepository.aggregate([
+        {
+          $match: { student_id: userId },
+        },
+        {
+          $addFields: {
+            id: { $toString: "$_id" },
+          },
+        },
+      ]);
+      console.log(logsList);
+
+      const interviewIds = logsList.map((_log) => _log.interview_id);
+
+      let interviews: any = await interviewRepository.find({
+        id: { $in: interviewIds },
+      });
+
+      const InterviewLogsList = logsList.map((log) => {
+        let _interview = interviews.filter(
+          (interview: any) => interview.id == log.interview_id
+        )[0];
+        _interview = {
+          ..._interview,
+          id: log.id,
+        };
+
+        return _interview;
+      });
+      return InterviewLogsList;
     } catch (error) {
       console.log("Error", error);
       return [];

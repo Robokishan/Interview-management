@@ -35,6 +35,9 @@ class UserAuth {
   email: string;
 
   @Field()
+  type: string;
+
+  @Field()
   token: Token;
 }
 
@@ -81,6 +84,12 @@ export class UserResolver {
   @Query(() => [User])
   async user(@Ctx() { em, req, res }: Context) {
     return em.find(User, {});
+  }
+
+  @Authorized()
+  @Query(() => User)
+  async me(@Ctx() { em, req, res }: Context) {
+    return em.findOne(User, { id: req.userId });
   }
 
   // TODO: FOR TESTING PURPOSE ONLY
@@ -167,6 +176,7 @@ export class UserResolver {
           user: {
             name: user?.name,
             email: user?.email,
+            type: user?.type,
             token: {
               access_token: accesstoken,
               expires_in: (jwt.decode(accesstoken) as any).exp,

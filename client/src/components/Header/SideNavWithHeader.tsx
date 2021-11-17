@@ -59,7 +59,11 @@ export default function SideNavWithHeader({
                                         renderIcon={Fade16}
                                         element={Link}
                                         key={route.name}
-                                        to={route.layout + route.path}>
+                                        to={
+                                            route.layout +
+                                            route.comp +
+                                            route.path
+                                        }>
                                         {route.name}
                                     </SideNavLink>
                                 ))}

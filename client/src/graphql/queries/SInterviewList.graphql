@@ -1,9 +1,9 @@
-query IInterviewList {
-    IInterviewList {
+query SInterviewList {
+    SInterviewList {
         id
         title
-        position
         description
         experience
+        position
     }
 }

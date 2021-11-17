@@ -13,7 +13,12 @@ import {
     TableRow,
 } from 'carbon-components-react';
 import cx from 'classnames';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import {
+    useSapplyForInterviewMutation,
+    useSInterviewListQuery,
+} from '../../generated/graphql';
 
 // const props = () => ({
 //     disabled: boolean('Disable page inputs (disabled)', false),
@@ -140,53 +145,123 @@ interface Props {
 export default function SInterviewList({
     showHeaders = true,
 }: Props): ReactElement {
+    const [{ data, fetching, error }] = useSInterviewListQuery();
+    const [, applyInterview] = useSapplyForInterviewMutation();
+
+    const [rows, setRows] = useState<any>([]);
+    const [headers, setHeaders] = useState<any>([]);
+    useEffect(() => {
+        let interviewList: any = data?.SInterviewList;
+
+        let header: any = [];
+        interviewList?.map(log =>
+            Object.keys(log)
+                .filter(
+                    _key =>
+                        _key != '__typename' &&
+                        _key != 'id' &&
+                        (header.length > 0
+                            ? header.filter(e => e.key == _key).length > 0
+                                ? false
+                                : true
+                            : true),
+                )
+                .map((__key, index) => {
+                    header.push({
+                        key: __key,
+                        header: __key.charAt(0).toUpperCase() + __key.slice(1),
+                    });
+                }),
+        );
+
+        interviewList?.forEach(interview => {
+            interview.action = (
+                <div>
+                    <Button
+                        size="md"
+                        onClick={async event => {
+                            try {
+                                await applyInterview({
+                                    sapplyForInterviewId: interview.id,
+                                });
+                                toast.dark('Applied! ', {
+                                    type: 'success',
+                                });
+                            } catch (error) {
+                                toast.dark('Something went wrong ', {
+                                    type: 'error',
+                                });
+                            }
+                        }}>
+                        Apply
+                    </Button>
+                </div>
+            );
+        });
+
+        if (!(header.filter(e => e.key === 'action').length > 0)) {
+            header.push({
+                key: 'action',
+                header: 'Action',
+            });
+        }
+
+        setHeaders(header);
+        setRows(interviewList);
+    }, [data]);
+
     return (
         <>
             <div className="bx--grid--full-width">
                 <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
                     {/* TODO: USE IT WHEN FETCHING DATA FROM GRAPHQL */}
                     {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}
-                    <DataTable rows={rows} headers={headers}>
-                        {({
-                            rows,
-                            headers,
-                            getTableProps,
-                            getHeaderProps,
-                            getRowProps,
-                        }) => (
-                            <Table width="800px" {...getTableProps()}>
-                                <TableHead>
-                                    <TableRow>
-                                        {headers.map(header => (
-                                            <TableHeader
-                                                {...getHeaderProps({
-                                                    header,
-                                                })}>
-                                                {header.header}
-                                            </TableHeader>
-                                        ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows.map(row => (
-                                        <TableRow {...getRowProps({ row })}>
-                                            {row.cells.map(cell => (
-                                                <TableCell key={cell.id}>
-                                                    {cell.value}
-                                                </TableCell>
+                    {fetching ? <DataTableSkeleton /> : null}
+                    {data?.SInterviewList && rows && headers ? (
+                        <DataTable rows={rows} headers={headers}>
+                            {({
+                                rows,
+                                headers,
+                                getTableProps,
+                                getHeaderProps,
+                                getRowProps,
+                            }) => (
+                                <Table {...getTableProps()}>
+                                    <TableHead>
+                                        <TableRow>
+                                            {headers.map(header => (
+                                                <TableHeader
+                                                    {...getHeaderProps({
+                                                        header,
+                                                    })}>
+                                                    {header.header}
+                                                </TableHeader>
                                             ))}
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </DataTable>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows.map(row => (
+                                            <TableRow {...getRowProps({ row })}>
+                                                {row.cells.map(cell => (
+                                                    <TableCell key={cell.id}>
+                                                        {cell.value}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
+                        </DataTable>
+                    ) : (
+                        <h1> No Interviews found</h1>
+                    )}
                     {/* TODO: Populate pagination data */}
-                    <Pagination
+                    {/* <Pagination
                         pageSize={10}
                         pageSizes={[10, 20, 30, 40, 50]}
                         onChange={e => console.log('Pagination', e)}
-                    />
+                    /> */}
                 </div>
             </div>
         </>

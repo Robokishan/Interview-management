@@ -1,6 +1,15 @@
 query IInterviewerLogsLists {
     IInterviewerLogsLists {
         id
-        student_id
+        interview {
+            title
+            description
+            experience
+            position
+        }
+        student {
+            name
+            email
+        }
     }
 }

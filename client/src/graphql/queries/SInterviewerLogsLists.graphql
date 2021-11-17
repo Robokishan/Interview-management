@@ -1,0 +1,9 @@
+query SInterviewerLogsLists {
+    SInterviewerLogsLists {
+        id
+        title
+        description
+        experience
+        position
+    }
+}

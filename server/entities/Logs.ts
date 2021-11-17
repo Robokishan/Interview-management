@@ -26,4 +26,12 @@ export class Logs extends BaseEntity<Logs, "_id"> {
   @Field()
   @Property()
   student_id!: string;
+
+  @Field()
+  @Property()
+  createdAt: Date = new Date();
+
+  @Field()
+  @Property({ onUpdate: () => new Date() })
+  updatedAt: Date = new Date();
 }

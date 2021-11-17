@@ -35,7 +35,6 @@ export class User extends BaseEntity<User, "_id"> {
   @Unique()
   email!: string;
 
-  @Field(() => String)
   @Property()
   password!: string;
 

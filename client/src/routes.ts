@@ -16,6 +16,7 @@ interface RouteType {
     name: string;
     icon: string;
     component: ({}) => ReactElement;
+    comp?: string;
     layout: string;
     type?: 'student' | 'interviewer'; //this will be decided from server side graphql
 }
@@ -28,6 +29,7 @@ const routes: RouteType[] = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: SInterviewList,
         layout: '/admin',
+        comp: '/student',
     },
     {
         show: true,
@@ -36,6 +38,7 @@ const routes: RouteType[] = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: CreateInterviewForm,
         layout: '/admin',
+        comp: '/interviewer',
     },
     {
         show: true,
@@ -44,6 +47,7 @@ const routes: RouteType[] = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: Attending,
         layout: '/admin',
+        comp: '/student',
     },
     {
         show: true,
@@ -52,6 +56,7 @@ const routes: RouteType[] = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: Profile,
         layout: '/admin',
+        comp: '/student',
     },
     // it is not show in sidebar because it is used as preview only
     // may be we can use this component in modal also so that we  dont have to render page
@@ -62,6 +67,7 @@ const routes: RouteType[] = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: CandidateProfile,
         layout: '/admin',
+        comp: '/student',
     },
     {
         show: true,
@@ -70,6 +76,7 @@ const routes: RouteType[] = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: Candidates,
         layout: '/admin',
+        comp: '/interviewer',
     },
     {
         show: true,
@@ -78,6 +85,7 @@ const routes: RouteType[] = [
         icon: 'ni ni-bullet-list-67 text-red',
         component: InterviewList,
         layout: '/admin',
+        comp: '/interviewer',
     },
     //   {
     //     show: true,
@@ -86,14 +94,14 @@ const routes: RouteType[] = [
     //     name: 'Responses',
     //     icon: 'ni ni-bullet-list-67 text-red',
     //     component: Responses,
-    //     layout: '/admin',
+    //     comp: '/admin',
     //   },
     //   {
     //     path: '/form/:formId',
     //     name: 'PublicForm',
     //     icon: 'ni ni-bullet-list-67 text-red',
     //     component: PublicForm,
-    //     layout: '/public',
+    //     comp: '/public',
     //   },
     {
         show: false,

@@ -1,5 +1,17 @@
-mutation IcreateInterview($options: InterviewInput!) {
-    IcreateInterview(options: $options) {
+mutation IcreateInterview(
+    $title: String!
+    $position: String!
+    $experience: String!
+    $description: String!
+) {
+    IcreateInterview(
+        options: {
+            title: $title
+            position: $position
+            experience: $experience
+            description: $description
+        }
+    ) {
         title
         id
     }

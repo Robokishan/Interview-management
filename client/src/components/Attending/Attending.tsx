@@ -13,7 +13,8 @@ import {
     TableRow,
 } from 'carbon-components-react';
 import cx from 'classnames';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { useSInterviewerLogsListsQuery } from '../../generated/graphql';
 
 // const props = () => ({
 //     disabled: boolean('Disable page inputs (disabled)', false),
@@ -137,48 +138,107 @@ interface Props {
     showHeaders?: boolean;
 }
 export default function Attending({ showHeaders = true }: Props): ReactElement {
+    const [{ data, fetching, error }] = useSInterviewerLogsListsQuery();
+    const [rows, setRows] = useState<any>([]);
+    const [headers, setHeaders] = useState<any>([]);
+
+    useEffect(() => {
+        let interviewList: any = data?.SInterviewerLogsLists;
+
+        let header: any = [];
+        interviewList?.forEach(interview => {
+            interview.action = 'Applied ✅';
+        });
+
+        if (!(header.filter(e => e.key === 'action').length > 0)) {
+            header.push({
+                key: 'action',
+                header: 'Action',
+            });
+        }
+        interviewList?.map(log =>
+            Object.keys(log)
+                .filter(
+                    _key =>
+                        _key != '__typename' &&
+                        _key != 'id' &&
+                        (header.length > 0
+                            ? header.filter(e => e.key == _key).length > 0
+                                ? false
+                                : true
+                            : true),
+                )
+                .map((__key, index) => {
+                    header.push({
+                        key: __key,
+                        header: __key.charAt(0).toUpperCase() + __key.slice(1),
+                    });
+                }),
+        );
+
+        setHeaders(header);
+        setRows(interviewList);
+    }, [data]);
+
     return (
         <div>
             {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}
-            <DataTable rows={rows} headers={headers}>
-                {({
-                    rows,
-                    headers,
-                    getTableProps,
-                    getHeaderProps,
-                    getRowProps,
-                }) => (
-                    <Table {...getTableProps()}>
-                        <TableHead>
-                            <TableRow>
-                                {headers.map(header => (
-                                    <TableHeader
-                                        {...getHeaderProps({ header })}>
-                                        {header.header}
-                                    </TableHeader>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map(row => (
-                                <TableRow {...getRowProps({ row })}>
-                                    {row.cells.map(cell => (
-                                        <TableCell key={cell.id}>
-                                            {cell.value}
-                                        </TableCell>
+            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+                {/* TODO: USE IT WHEN FETCHING DATA FROM GRAPHQL */}
+                {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}
+                {fetching ? <DataTableSkeleton /> : null}
+                {data?.SInterviewerLogsLists && rows && headers ? (
+                    <DataTable rows={rows} headers={headers}>
+                        {({
+                            rows,
+                            headers,
+                            getTableProps,
+                            getHeaderProps,
+                            getRowProps,
+                        }) => (
+                            <Table {...getTableProps()}>
+                                <TableHead>
+                                    <TableRow>
+                                        {headers.map(header => (
+                                            <TableHeader
+                                                {...getHeaderProps({
+                                                    header,
+                                                })}>
+                                                {header.header}
+                                            </TableHeader>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.map(row => (
+                                        <TableRow {...getRowProps({ row })}>
+                                            {row.cells.map(cell => (
+                                                <TableCell key={cell.id}>
+                                                    {cell.value}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
                                     ))}
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                </TableBody>
+                            </Table>
+                        )}
+                    </DataTable>
+                ) : (
+                    <h1> No Interviews found</h1>
                 )}
-            </DataTable>
+                {/* TODO: Populate pagination data */}
+                {/* <Pagination
+                        pageSize={10}
+                        pageSizes={[10, 20, 30, 40, 50]}
+                        onChange={e => console.log('Pagination', e)}
+                    /> */}
+            </div>
             {/* TODO: Populate pagination data */}
-            <Pagination
+            {/* <Pagination
                 pageSize={10}
                 pageSizes={[10, 20, 30, 40, 50]}
                 onChange={e => console.log('Pagination', e)}
-            />
+            /> */}
             <br />
         </div>
     );

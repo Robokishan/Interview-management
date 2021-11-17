@@ -49,9 +49,18 @@ export type LoginInput = {
 export type Logs = {
   __typename?: 'Logs';
   _id: Scalars['String'];
+  createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   interview_id: Scalars['String'];
   student_id: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type LogsResponse = {
+  __typename?: 'LogsResponse';
+  id: Scalars['String'];
+  interview: Interview;
+  student: User;
 };
 
 export type Mutation = {
@@ -109,9 +118,12 @@ export type MutationRegistrationArgs = {
 export type Query = {
   __typename?: 'Query';
   IInterviewList: Array<Interview>;
-  IInterviewerLogsLists: Array<Logs>;
+  IInterviewerLogsLists: Array<LogsResponse>;
   IgetInterviewerLog: Logs;
   SIInterview: Interview;
+  SInterviewList: Array<Interview>;
+  SInterviewerLogsLists: Array<Interview>;
+  me: User;
   user: Array<User>;
 };
 
@@ -160,7 +172,6 @@ export type User = {
   email: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
-  password: Scalars['String'];
   type: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   username: Scalars['String'];
@@ -171,6 +182,7 @@ export type UserAuth = {
   email: Scalars['String'];
   name: Scalars['String'];
   token: Token;
+  type: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -180,7 +192,10 @@ export type UserResponse = {
 };
 
 export type IcreateInterviewMutationVariables = Exact<{
-  options: InterviewInput;
+  title: Scalars['String'];
+  position: Scalars['String'];
+  experience: Scalars['String'];
+  description: Scalars['String'];
 }>;
 
 
@@ -220,7 +235,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'UserAuth', name: string, token: { __typename?: 'Token', access_token: string } } | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'UserAuth', name: string, type: string } | null | undefined } };
 
 export type RegistrationMutationVariables = Exact<{
   email: Scalars['String'];
@@ -234,15 +249,37 @@ export type RegistrationMutationVariables = Exact<{
 
 export type RegistrationMutation = { __typename?: 'Mutation', registration: { __typename?: 'RegistrationResponse', errors?: Array<{ __typename?: 'FieldError', message: string, field: string }> | null | undefined, user?: { __typename?: 'RegistrationUser', email: string, name: string } | null | undefined } };
 
+export type IInterviewListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IInterviewListQuery = { __typename?: 'Query', IInterviewList: Array<{ __typename?: 'Interview', id: string, title: string, position: string, description: string, experience: string }> };
+
 export type IInterviewerLogsListsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type IInterviewerLogsListsQuery = { __typename?: 'Query', IInterviewerLogsLists: Array<{ __typename?: 'Logs', id: string, student_id: string }> };
+export type IInterviewerLogsListsQuery = { __typename?: 'Query', IInterviewerLogsLists: Array<{ __typename?: 'LogsResponse', id: string, interview: { __typename?: 'Interview', title: string, description: string, experience: string, position: string }, student: { __typename?: 'User', name: string, email: string } }> };
+
+export type SInterviewListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SInterviewListQuery = { __typename?: 'Query', SInterviewList: Array<{ __typename?: 'Interview', id: string, title: string, description: string, experience: string, position: string }> };
+
+export type SInterviewerLogsListsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SInterviewerLogsListsQuery = { __typename?: 'Query', SInterviewerLogsLists: Array<{ __typename?: 'Interview', id: string, title: string, description: string, experience: string, position: string }> };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', name: string, username: string, email: string, details?: string | null | undefined, type: string } };
 
 
 export const IcreateInterviewDocument = gql`
-    mutation IcreateInterview($options: InterviewInput!) {
-  IcreateInterview(options: $options) {
+    mutation IcreateInterview($title: String!, $position: String!, $experience: String!, $description: String!) {
+  IcreateInterview(
+    options: {title: $title, position: $position, experience: $experience, description: $description}
+  ) {
     title
     id
   }
@@ -297,9 +334,7 @@ export const LoginDocument = gql`
     }
     user {
       name
-      token {
-        access_token
-      }
+      type
     }
   }
 }
@@ -328,15 +363,84 @@ export const RegistrationDocument = gql`
 export function useRegistrationMutation() {
   return Urql.useMutation<RegistrationMutation, RegistrationMutationVariables>(RegistrationDocument);
 };
+export const IInterviewListDocument = gql`
+    query IInterviewList {
+  IInterviewList {
+    id
+    title
+    position
+    description
+    experience
+  }
+}
+    `;
+
+export function useIInterviewListQuery(options: Omit<Urql.UseQueryArgs<IInterviewListQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<IInterviewListQuery>({ query: IInterviewListDocument, ...options });
+};
 export const IInterviewerLogsListsDocument = gql`
     query IInterviewerLogsLists {
   IInterviewerLogsLists {
     id
-    student_id
+    interview {
+      title
+      description
+      experience
+      position
+    }
+    student {
+      name
+      email
+    }
   }
 }
     `;
 
 export function useIInterviewerLogsListsQuery(options: Omit<Urql.UseQueryArgs<IInterviewerLogsListsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<IInterviewerLogsListsQuery>({ query: IInterviewerLogsListsDocument, ...options });
+};
+export const SInterviewListDocument = gql`
+    query SInterviewList {
+  SInterviewList {
+    id
+    title
+    description
+    experience
+    position
+  }
+}
+    `;
+
+export function useSInterviewListQuery(options: Omit<Urql.UseQueryArgs<SInterviewListQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SInterviewListQuery>({ query: SInterviewListDocument, ...options });
+};
+export const SInterviewerLogsListsDocument = gql`
+    query SInterviewerLogsLists {
+  SInterviewerLogsLists {
+    id
+    title
+    description
+    experience
+    position
+  }
+}
+    `;
+
+export function useSInterviewerLogsListsQuery(options: Omit<Urql.UseQueryArgs<SInterviewerLogsListsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SInterviewerLogsListsQuery>({ query: SInterviewerLogsListsDocument, ...options });
+};
+export const MeDocument = gql`
+    query me {
+  me {
+    name
+    username
+    email
+    details
+    type
+  }
+}
+    `;
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };

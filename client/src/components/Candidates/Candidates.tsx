@@ -13,7 +13,8 @@ import {
     TableRow,
 } from 'carbon-components-react';
 import cx from 'classnames';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { useIInterviewerLogsListsQuery } from '../../generated/graphql';
 
 // const props = () => ({
 //     disabled: boolean('Disable page inputs (disabled)', false),
@@ -139,48 +140,146 @@ interface Props {
 export default function Candidates({
     showHeaders = true,
 }: Props): ReactElement {
+    const [{ data, fetching, error }] = useIInterviewerLogsListsQuery();
+    const [rows, setRows] = useState<any>([]);
+    const [headers, setHeaders] = useState<any>([]);
+
+    useEffect(() => {
+        let logList: any = data?.IInterviewerLogsLists;
+        let header: any = [];
+        logList?.map(log =>
+            Object.keys(log.interview)
+                .filter(
+                    _key =>
+                        _key != '__typename' &&
+                        _key != 'id' &&
+                        (header.length > 0
+                            ? header.filter(e => e.key == _key).length > 0
+                                ? false
+                                : true
+                            : true),
+                )
+                .map((__key, index) => {
+                    header.push({
+                        key: __key,
+                        header: __key.charAt(0).toUpperCase() + __key.slice(1),
+                    });
+                }),
+        );
+        logList?.map(log =>
+            Object.keys(log.student)
+                .filter(
+                    _key =>
+                        _key != '__typename' &&
+                        _key != 'id' &&
+                        (header.length > 0
+                            ? header.filter(e => e.key == _key).length > 0
+                                ? false
+                                : true
+                            : true),
+                )
+                .map((__key, index) => {
+                    header.push({
+                        key: __key,
+                        header: __key.charAt(0).toUpperCase() + __key.slice(1),
+                    });
+                }),
+        );
+
+        // interviewList?.forEach(interview => {
+        //     interview.action = (
+        //         <div>
+        //             <Button
+        //                 size="md"
+        //                 onClick={async event => {
+        //                     try {
+        //                         await applyInterview({
+        //                             sapplyForInterviewId: interview.id,
+        //                         });
+        //                         toast.dark('Applied! ', {
+        //                             type: 'success',
+        //                         });
+        //                     } catch (error) {
+        //                         toast.dark('Something went wrong ', {
+        //                             type: 'error',
+        //                         });
+        //                     }
+        //                 }}>
+        //                 Apply
+        //             </Button>
+        //         </div>
+        //     );
+        // });
+
+        // if (!(header.filter(e => e.key === 'action').length > 0)) {
+        //     header.push({
+        //         key: 'action',
+        //         header: 'Action',
+        //     });
+        // }
+
+        setHeaders(header);
+
+        setRows(
+            logList?.map(log => {
+                return {
+                    ...log.interview,
+                    id: log.id,
+                    ...log.student,
+                };
+            }),
+        );
+    }, [data]);
+
     return (
-        <div>
+        <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
             {/* <DataTableSkeleton headers={showHeaders ? headers : undefined} /> */}
-            <DataTable rows={rows} headers={headers}>
-                {({
-                    rows,
-                    headers,
-                    getTableProps,
-                    getHeaderProps,
-                    getRowProps,
-                }) => (
-                    <Table {...getTableProps()}>
-                        <TableHead>
-                            <TableRow>
-                                {headers.map(header => (
-                                    <TableHeader
-                                        {...getHeaderProps({ header })}>
-                                        {header.header}
-                                    </TableHeader>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map(row => (
-                                <TableRow {...getRowProps({ row })}>
-                                    {row.cells.map(cell => (
-                                        <TableCell key={cell.id}>
-                                            {cell.value}
-                                        </TableCell>
+            {fetching ? <DataTableSkeleton /> : null}
+            {data?.IInterviewerLogsLists && rows && headers ? (
+                <DataTable rows={rows} headers={headers}>
+                    {({
+                        rows,
+                        headers,
+                        getTableProps,
+                        getHeaderProps,
+                        getRowProps,
+                    }) => (
+                        <Table {...getTableProps()}>
+                            <TableHead>
+                                <TableRow>
+                                    {headers.map(header => (
+                                        <TableHeader
+                                            {...getHeaderProps({
+                                                header,
+                                            })}>
+                                            {header.header}
+                                        </TableHeader>
                                     ))}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                )}
-            </DataTable>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map(row => (
+                                    <TableRow {...getRowProps({ row })}>
+                                        {row.cells.map(cell => (
+                                            <TableCell key={cell.id}>
+                                                {cell.value}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
+                </DataTable>
+            ) : (
+                <h1> No Interviews found</h1>
+            )}
             {/* TODO: Populate pagination data */}
-            <Pagination
+            {/* <Pagination
                 pageSize={10}
                 pageSizes={[10, 20, 30, 40, 50]}
                 onChange={e => console.log('Pagination', e)}
-            />
+            /> */}
             <br />
         </div>
     );

@@ -6,17 +6,26 @@ import {
     Grid,
     InlineLoading,
     Row,
+    TextArea,
     TextInput,
     Tooltip,
 } from 'carbon-components-react';
 
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { MeQuery, useMeQuery } from '../../generated/graphql';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 const TextInputProps = {
     id: 'email',
     labelText: 'Email',
     placeholder: 'Email',
+};
+const textareaProps = {
+    labelText: 'Details',
+    placeholder: 'Details',
+    id: 'details',
+    cols: 50,
+    rows: 4,
 };
 
 const PasswordProps = {
@@ -47,6 +56,13 @@ const items = [
 ];
 
 export default function ProfileForm({}: Props): ReactElement {
+    const [user, setUser] = useState<any>({
+        name: '',
+        username: '',
+        type: '',
+        email: '',
+        details: '',
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [description, setDescription] = useState('Processing...');
@@ -57,37 +73,27 @@ export default function ProfileForm({}: Props): ReactElement {
 
     const { width, height } = useWindowDimensions();
 
-    const handleSubmit = e => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setAriaLive('assertive');
-
-        // Instead of making a real request, we mock it with a timer
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setSuccess(true);
-            setDescription('Done!');
-
-            // To make submittable again, we reset the state after a bit so the user gets completion feedback
-            setTimeout(() => {
-                setSuccess(false);
-                setDescription('Processing...');
-                setAriaLive('off');
-            }, 1500);
-        }, 2000);
-    };
-
-    const onChange = e => {
-        console.log(e);
-    };
+    const [{ data, fetching, error }] = useMeQuery();
+    useEffect(() => {
+        let user = {
+            name: data?.me.name,
+            username: data?.me.username,
+            type: data?.me.type,
+            email: data?.me.email,
+            details: data?.me.details,
+        };
+        setUser(user);
+    }, [data]);
 
     return (
         <Grid className="bx--col-md-4 bx--col-lg-7">
-            <Form onSubmit={handleSubmit}>
+            <Form>
                 <div style={{ marginTop: '2rem' }}>
                     <Row>
                         <Column style={{ marginTop: '2rem' }} lg={8}>
                             <TextInput
+                                defaultValue={user.username}
+                                disabled
                                 type="text"
                                 id="username"
                                 labelText="Username"
@@ -95,28 +101,38 @@ export default function ProfileForm({}: Props): ReactElement {
                             />
                         </Column>
                         <Column style={{ marginTop: '2rem' }} lg={8}>
-                            <TextInput type="email" {...TextInputProps} />
+                            <TextInput
+                                defaultValue={user.email}
+                                disabled
+                                type="email"
+                                {...TextInputProps}
+                            />
                         </Column>
                     </Row>
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                     <TextInput
+                        defaultValue={user.name}
+                        disabled
                         type="text"
                         id="name"
                         labelText="Name"
                         placeholder="Full Name"
                     />
                 </div>
-                <div style={{ marginTop: '2rem' }}>
+                {/* <div style={{ marginTop: '2rem' }}>
                     <TextInput
+                    
+                        disabled
                         type="password"
                         required
                         // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
                         {...PasswordProps}
                     />
-                </div>
+                </div> */}
                 <div style={{ marginTop: '2rem' }}>
                     <Dropdown
+                        defaultValue={user.type}
                         id="default"
                         disabled
                         titleText="Who am i?"
@@ -124,7 +140,13 @@ export default function ProfileForm({}: Props): ReactElement {
                         label="Please select"
                         items={items}
                         itemToString={item => (item ? item.text : '')}
-                        onChange={onChange}
+                    />
+                </div>
+                <div style={{ marginTop: '1rem' }}>
+                    <TextArea
+                        disabled
+                        defaultValue={user.details}
+                        {...textareaProps}
                     />
                 </div>
                 <div
@@ -144,8 +166,8 @@ export default function ProfileForm({}: Props): ReactElement {
                             aria-live={ariaLive}
                         />
                     ) : (
-                        <Button kind="tertiary" type="submit">
-                            Save
+                        <Button disabled kind="tertiary" type="submit">
+                            Update
                         </Button>
                     )}
                 </div>

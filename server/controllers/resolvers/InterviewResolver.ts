@@ -17,10 +17,14 @@ import { User } from "../../entities/User";
 import { wrap } from "@mikro-orm/core";
 import { Logs } from "../../entities/Logs";
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 @InputType()
 class InterviewInput {
   @Field()
   title: string;
+
   @Field()
   description: string;
 
@@ -44,6 +48,14 @@ export class InterviewResolver {
         $eq: userId,
       },
     });
+  }
+
+  @Authorized()
+  @Query(() => [Interview])
+  async SInterviewList(@Ctx() { em, req, res }: Context) {
+    const userId = req.userId;
+    const interviewRepository = em.getRepository(Interview);
+    return interviewRepository.find({});
   }
 
   // Interviewer create interview

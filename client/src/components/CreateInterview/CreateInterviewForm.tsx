@@ -8,12 +8,15 @@ import {
     TextArea,
     TextInput,
 } from 'carbon-components-react';
+import { Formik } from 'formik';
 import React, { ReactElement, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useIcreateInterviewMutation } from '../../generated/graphql';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 const TextInputProps = {
-    id: 'exp',
+    id: 'experience',
     labelText: 'Experience',
     placeholder: 'Experience Required',
 };
@@ -49,85 +52,125 @@ export default function CreateInterviewForm({}: Props): ReactElement {
     const history = useHistory();
 
     const { width, height } = useWindowDimensions();
+    const [, createInterview] = useIcreateInterviewMutation();
 
-    const handleSubmit = e => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setAriaLive('assertive');
-
-        // Instead of making a real request, we mock it with a timer
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setSuccess(true);
-            setDescription('Done!');
-
-            // To make submittable again, we reset the state after a bit so the user gets completion feedback
-            setTimeout(() => {
-                setSuccess(false);
-                setDescription('Processing...');
-                setAriaLive('off');
-            }, 1500);
-        }, 2000);
-    };
-
-    const onChange = e => {
-        console.log(e);
+    const onSubmit = async (values, { setSubmitting }) => {
+        try {
+            const response = await createInterview(values);
+            if (response.error) throw new Error('Something is wrong');
+            toast.dark('Created ' + response.data?.IcreateInterview.title, {
+                type: 'success',
+            });
+        } catch (error) {
+            toast.dark('Something went wrong !', {
+                type: 'error',
+            });
+        }
     };
 
     return (
         <Grid className="bx--col-md-6 bx--col-lg-7">
-            <Form onSubmit={handleSubmit}>
-                <div style={{ marginTop: '2rem' }}>
-                    <TextInput
-                        type="text"
-                        id="title"
-                        labelText="Title"
-                        placeholder="Interview Title"
-                    />
-                </div>
-
-                <div style={{ marginTop: '1rem' }}>
-                    <Row>
-                        <Column style={{ marginTop: '1rem' }} md={4} lg={8}>
+            <Formik
+                initialValues={{
+                    title: '',
+                    position: '',
+                    experience: '',
+                    description: '',
+                }}
+                validate={values => {
+                    // console.log(values);
+                    // const errors = {};
+                    // if (!values.email) {
+                    //     errors.email = 'Required';
+                    // } else if (
+                    //     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+                    //         values.email,
+                    //     )
+                    // ) {
+                    //     errors.email = 'Invalid email address';
+                    // }
+                    // return errors;
+                }}
+                onSubmit={onSubmit}>
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    /* and other goodies */
+                }) => (
+                    <Form onSubmit={handleSubmit}>
+                        <div style={{ marginTop: '2rem' }}>
                             <TextInput
                                 type="text"
-                                id="position"
-                                labelText="Position"
-                                placeholder="Position"
+                                id="title"
+                                onChange={handleChange}
+                                labelText="Title"
+                                placeholder="Interview Title"
                             />
-                        </Column>
-                        <Column style={{ marginTop: '1rem' }} md={4} lg={8}>
-                            <TextInput type="text" {...TextInputProps} />
-                        </Column>
-                    </Row>
-                </div>
+                        </div>
 
-                <div style={{ marginTop: '1rem' }}>
-                    <TextArea {...textareaProps} />
-                </div>
-                <div
-                    style={{
-                        display: 'flex',
-                        width: '100%',
-                        flexWrap: 'wrap',
-                        gap: '2rem',
-                        justifyContent: 'space-between',
-                        marginTop: '2rem',
-                    }}>
-                    {isSubmitting || success ? (
-                        <InlineLoading
-                            style={{ marginLeft: '1rem' }}
-                            description={description}
-                            status={success ? 'finished' : 'active'}
-                            aria-live={ariaLive}
-                        />
-                    ) : (
-                        <Button kind="tertiary" type="submit">
-                            Save
-                        </Button>
-                    )}
-                </div>
-            </Form>
+                        <div style={{ marginTop: '1rem' }}>
+                            <Row>
+                                <Column
+                                    style={{ marginTop: '1rem' }}
+                                    md={4}
+                                    lg={8}>
+                                    <TextInput
+                                        onChange={handleChange}
+                                        type="text"
+                                        id="position"
+                                        labelText="Position"
+                                        placeholder="Position"
+                                    />
+                                </Column>
+                                <Column
+                                    style={{ marginTop: '1rem' }}
+                                    md={4}
+                                    lg={8}>
+                                    <TextInput
+                                        onChange={handleChange}
+                                        type="text"
+                                        {...TextInputProps}
+                                    />
+                                </Column>
+                            </Row>
+                        </div>
+
+                        <div style={{ marginTop: '1rem' }}>
+                            <TextArea
+                                onChange={handleChange}
+                                {...textareaProps}
+                            />
+                        </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                width: '100%',
+                                flexWrap: 'wrap',
+                                gap: '2rem',
+                                justifyContent: 'space-between',
+                                marginTop: '2rem',
+                            }}>
+                            {isSubmitting || success ? (
+                                <InlineLoading
+                                    style={{ marginLeft: '1rem' }}
+                                    description={description}
+                                    status={success ? 'finished' : 'active'}
+                                    aria-live={ariaLive}
+                                />
+                            ) : (
+                                <Button kind="tertiary" type="submit">
+                                    Save
+                                </Button>
+                            )}
+                        </div>
+                    </Form>
+                )}
+            </Formik>
         </Grid>
     );
 }

@@ -25,9 +25,9 @@ ReactDOM.render(
             <UrqlProvider value={client}>
                 <ToastContainer hideProgressBar />
                 {/* for testing uncomment this line */}
-                <Route path="/admin" component={AdminLayout} />
+                {/* <Route path="/admin" component={AdminLayout} /> */}
                 {/* for testing comment this line */}
-                {/* <Protectedroute path="/admin" component={AdminLayout} /> */}
+                <Protectedroute path="/admin" component={AdminLayout} />
                 <Route
                     path="/auth"
                     render={props => <AuthLayout {...props} />}

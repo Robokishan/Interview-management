@@ -49,6 +49,7 @@ export default function Admin({}: Props): ReactElement {
         return sideBarList;
     };
 
+    const user = storage.getUser();
     return (
         <div
             className="container"
@@ -60,6 +61,8 @@ export default function Admin({}: Props): ReactElement {
                 alignItems: 'center',
             }}>
             <SideNavWithHeader
+                headerName={user.name}
+                headerTailName={`[${user.type}]`}
                 isRail={width ? (width <= 672 ? false : true) : false}
                 sideBarList={getSideBarList(routes)}
             />

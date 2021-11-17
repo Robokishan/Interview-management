@@ -27,11 +27,15 @@ const Fade16 = () => (
 interface Props {
     sideBarList: RouteType[];
     isRail: boolean;
+    headerName?: string;
+    headerTailName?: string;
 }
 
 export default function SideNavWithHeader({
     sideBarList,
     isRail,
+    headerName = 'Campus',
+    headerTailName = 'Placement',
 }: Props): React.ReactElement {
     // TODO: Instead of hooks try to use styled component
 
@@ -46,8 +50,8 @@ export default function SideNavWithHeader({
                             onClick={onClickSideNavExpand}
                             isActive={isSideNavExpanded}
                         />
-                        <HeaderName href="#" prefix="Campus">
-                            Placement
+                        <HeaderName href="#" prefix={headerName}>
+                            {headerTailName}
                         </HeaderName>
                         <SideNav
                             isRail={isRail}

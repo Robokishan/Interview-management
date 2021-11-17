@@ -1,12 +1,9 @@
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
-
-import dotenv = require("dotenv");
 import { MikroORM } from "@mikro-orm/core";
 import { MongoDriver } from "@mikro-orm/mongodb";
 import { ApolloServer } from "apollo-server-express";
 import colors from "colors";
 import cors, { CorsOptions } from "cors";
-import "dotenv-safe/config";
 // new methods
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";

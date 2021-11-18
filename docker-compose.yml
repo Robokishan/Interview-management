@@ -14,8 +14,8 @@ services:
       test: test $$(echo "rs.initiate().ok || rs.slaveOk().ok || rs.status().ok" | mongo --quiet) -eq 1
       interval: 10s
       start_period: 30s
-    # volumes:
-    #   - "mongodb_data:/bitnami/mongodb"
+    volumes:
+      - "mongodb_data:/bitnami/mongodb"
 
   mongo2:
     hostname: mongo2
@@ -55,19 +55,19 @@ services:
       - mongo2
       - mongo3
 
-  # client:
-  #   build: ./client/
-  #   container_name: campus-client
-  #   image: cp-client
-  #   ports:
-  #     - "5051:80"
-  #   depends_on:
-  #     - mongo1
-  #     - mongo2
-  #     - mongo3
-  #     - server
+  client:
+    build: ./client/
+    container_name: campus-client
+    image: cp-client
+    ports:
+      - "5051:80"
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+      - server
 
-# volumes:
-#   mongodb_data:
+volumes:
+  mongodb_data:
 
 version: "2.4"

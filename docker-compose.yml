@@ -11,21 +11,60 @@ services:
     ports:
       - "5050:8081"
     depends_on:
-      - mongodb
-  client:
-    build: ./client/
-    container_name: campus-client
-    image: cp-client
-    ports:
-      - "5051:80"
-  mongodb:
+      - mongodb-primary
+      - mongodb-secondary
+      - mongodb-arbiter
+
+  # client:
+  #   build: ./client/
+  #   container_name: campus-client
+  #   image: cp-client
+  #   ports:
+  #     - "5051:80"
+  mongodb-primary:
     image: docker.io/bitnami/mongodb:4.4
+    expose:
+      - 27017
     ports:
-      - "27017:27017"
-#     environment:
-#     - MONGODB_ROOT_USER=rooot
-#     - MONGODB_DATABASE=campus
-#     - MONGODB_ROOT_PASSWORD=password123
+      - 27017:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_ROOT_USER=rooot
+      - MONGODB_DATABASE=campus
+      - MONGODB_ROOT_PASSWORD=password123
+
+  mongodb-secondary:
+    image: docker.io/bitnami/mongodb:4.4
+    depends_on:
+      - mongodb-primary
+    expose:
+      - 27017
+    ports:
+      - 27012:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+
+  mongodb-arbiter:
+    image: docker.io/bitnami/mongodb:4.4
+    depends_on:
+      - mongodb-primary
+    expose:
+      - 27017
+    ports:
+      - 27013:27017
+    environment:
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
 #     volumes:
 #       - "mongodb_data:/bitnami/mongodb"
 # volumes:

@@ -16,6 +16,14 @@ Feel free to make contribution only <strong>Good code practices</strong> are alo
 </p>
 </p>
 
+---
+
+<p align="center">
+  <strong>Deploy with</strong>
+</p>
+<a href="#"><p align="center">
+<img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/docker.png"/>
+</p></a>
 
 ---
 

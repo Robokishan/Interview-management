@@ -47,7 +47,7 @@ export default function SideNavWithHeader({
         <HeaderContainer
             render={({ isSideNavExpanded, onClickSideNavExpand }) => (
                 <>
-                    <Header aria-label="Campus Placement app">
+                    <Header aria-label="Interview Management">
                         <SkipToContent />
                         <HeaderMenuButton
                             aria-label="Open menu"

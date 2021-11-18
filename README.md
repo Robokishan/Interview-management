@@ -1,4 +1,6 @@
-
+<p align="center">
+  <strong>Made with</strong>
+</p>
 <a href="http://kishanjoshi.dev"><p align="center">
 <img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/graphql.png"/>
 <img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/nodejs.png"/>

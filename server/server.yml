@@ -1,0 +1,61 @@
+#  docker-compose --env-file docker.env  up
+services:
+  mongo1:
+    hostname: mongo1
+    container_name: localmongo1
+    image: mongo:4.4-focal
+    expose:
+      - 27017
+    ports:
+      - 27011:27017
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+    healthcheck:
+      test: test $$(echo "rs.initiate().ok || rs.slaveOk().ok || rs.status().ok" | mongo --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+    volumes:
+      - "mongodb_data:/bitnami/mongodb"
+
+  mongo2:
+    hostname: mongo2
+    container_name: localmongo2
+    image: mongo:4.4-focal
+    expose:
+      - 27017
+    ports:
+      - 27012:27017
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+
+  mongo3:
+    hostname: mongo3
+    container_name: localmongo3
+    image: mongo:4.4-focal
+    expose:
+      - 27017
+    ports:
+      - 27013:27017
+    restart: always
+    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
+
+  server:
+    container_name: campus-backend
+    build: .
+    image: cp-backend
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=jwt_secret
+      - MONGODB_URL=mongodb://mongo1:27017/campus?retryWrites=false&w=majority
+    command: sh -c './sleep.sh'
+    ports:
+      - "5050:8081"
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+
+volumes:
+  mongodb_data:
+
+version: "2.4"

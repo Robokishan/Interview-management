@@ -1,0 +1,15 @@
+#  docker-compose --env-file docker.env  up
+services:
+  client:
+    build: . 
+    container_name: campus-client
+    image: cp-client
+    ports:
+      - "5051:80"
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+      - server
+
+version: "2.4"

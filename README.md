@@ -27,7 +27,7 @@ Feel free to make contribution only <strong>Good code practices</strong> are alo
 
 ---
 
-This code is only intended for what graphql can do.
+This project is only intended for what graphql can do.
 
 Future scropes are listed below
 - Graphql subscription

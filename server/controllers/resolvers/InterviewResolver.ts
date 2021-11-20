@@ -1,3 +1,4 @@
+import { wrap } from "@mikro-orm/core";
 import {
   Arg,
   Authorized,
@@ -6,16 +7,11 @@ import {
   InputType,
   Mutation,
   Query,
-  Resolver,
+  Resolver
 } from "type-graphql";
-// import { getMongoRepository } from "typeorm";
-// import { Forms } from "../../models/typeormEnt/v1/Forms";
-import { Context } from "../../types/Context";
-import { ObjectID } from "mongodb";
 import { Interview } from "../../entities/Interview";
-import { User } from "../../entities/User";
-import { wrap } from "@mikro-orm/core";
 import { Logs } from "../../entities/Logs";
+import { Context } from "../../types/Context";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -115,13 +111,26 @@ export class InterviewResolver {
   }
 
   // view interview
+  //future scope check access token is from student only currently this is open
   @Authorized()
   @Query(() => Interview)
-  async SIInterview(@Arg("id") id: string, @Ctx() { em, req, res }: Context) {
+  async SInterview(@Arg("id") id: string, @Ctx() { em, req, res }: Context) {
     const userId = req.userId;
     const interviewRepository = em.getRepository(Interview);
     return interviewRepository.findOne({
       id: id,
+    });
+  }
+
+  // view interview
+  @Authorized()
+  @Query(() => Interview)
+  async IInterview(@Arg("id") id: string, @Ctx() { em, req, res }: Context) {
+    const userId = req.userId;
+    const interviewRepository = em.getRepository(Interview);
+    return interviewRepository.findOne({
+      id: id,
+      owner_id: userId
     });
   }
 }

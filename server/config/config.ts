@@ -12,14 +12,4 @@ if (process.env.NODE_ENV == "development") {
 
 export default config;
 
-// const config = import(`./environments/${process.env.NODE_ENV}`);
-// console.log(await config);
-// import * from "./environments/development";
-// let config;
-// if (process.env.NODE_ENV == "development") {
-// }
-// // export default config;
-// (async function () {
-//   const run = await import(`./environments/${process.env.NODE_ENV}`);
-//   export default config;
-// })();
+

@@ -2,21 +2,15 @@ import {
   Arg,
   Authorized,
   Ctx,
-  Field,
-  InputType,
-  Mutation,
+  Field, Mutation,
   ObjectType,
   Query,
-  Resolver,
+  Resolver
 } from "type-graphql";
-// import { getMongoRepository } from "typeorm";
-// import { formanswers } from "../../models/typeormEnt/v1/FormAns";
-// import { Forms } from "../../models/typeormEnt/v1/Forms";
-import { Context } from "../../types/Context";
-import { ObjectID } from "mongodb";
-import { Logs } from "../../entities/Logs";
 import { Interview } from "../../entities/Interview";
+import { Logs } from "../../entities/Logs";
 import { User } from "../../entities/User";
+import { Context } from "../../types/Context";
 
 @ObjectType()
 class LogsResponse {

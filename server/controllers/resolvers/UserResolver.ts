@@ -1,21 +1,18 @@
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
   Arg,
   Authorized,
   Ctx,
-  Field,
-  InputType,
-  Mutation,
+  Field, Mutation,
   ObjectType,
   Query,
-  Resolver,
+  Resolver
 } from "type-graphql";
+import config from "../../config/config";
 import { LoginInput, RegistrationInput, User } from "../../entities/User";
-// import { Users } from "../../models/typeormEnt/v1/User";
 import { Context } from "../../types/Context";
 import { createAccessToken, verifyPassword } from "../../utils/PasswordManager";
-import bcrypt from "bcrypt";
-import config from "../../config/config";
 const saltRounds = config.SALT_ROUNDS;
 @ObjectType()
 class Token {

@@ -117,14 +117,20 @@ export type MutationRegistrationArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  IInterview: Interview;
   IInterviewList: Array<Interview>;
   IInterviewerLogsLists: Array<LogsResponse>;
   IgetInterviewerLog: Logs;
-  SIInterview: Interview;
+  SInterview: Interview;
   SInterviewList: Array<Interview>;
   SInterviewerLogsLists: Array<Interview>;
   me: User;
   user: Array<User>;
+};
+
+
+export type QueryIInterviewArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -133,7 +139,7 @@ export type QueryIgetInterviewerLogArgs = {
 };
 
 
-export type QuerySiInterviewArgs = {
+export type QuerySInterviewArgs = {
   id: Scalars['String'];
 };
 

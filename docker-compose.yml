@@ -42,7 +42,7 @@ services:
   server:
     container_name: campus-backend
     build: ./server/
-    image: cp-backend
+    image: robokishan/interview-backend
     environment:
       - NODE_ENV=production
       - JWT_SECRET=jwt_secret
@@ -58,7 +58,7 @@ services:
   client:
     build: ./client/
     container_name: campus-client
-    image: cp-client
+    image: robokishan/interview-frontend
     ports:
       - "5051:80"
     depends_on:

@@ -56,26 +56,6 @@ export default function Login({}: Props): ReactElement {
     const history = useHistory();
     const [, loginMut] = useLoginMutation();
 
-    // const handleSubmit = e => {
-    //     e.preventDefault();
-    //     setIsSubmitting(true);
-    //     setAriaLive('assertive');
-
-    //     // Instead of making a real request, we mock it with a timer
-    //     setTimeout(() => {
-    //         setIsSubmitting(false);
-    //         setSuccess(true);
-    //         setDescription('Logged in!');
-
-    //         // To make submittable again, we reset the state after a bit so the user gets completion feedback
-    //         setTimeout(() => {
-    //             setSuccess(false);
-    //             setDescription('Logging in...');
-    //             setAriaLive('off');
-    //         }, 1500);
-    //     }, 2000);
-    // };
-
     const handleSubmit = async (values, { setSubmitting }) => {
         const response = await loginMut(values);
         if (response.data?.login.errors) {

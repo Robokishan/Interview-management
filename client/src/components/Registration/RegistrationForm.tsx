@@ -61,17 +61,13 @@ export default function RegistrationForm({}: Props): ReactElement {
         const response = await registrationMut(values);
         if (response.data?.registration.errors) {
             toast.dark(response.data.registration.errors[0].message, {
-                type: 'success',
+                type: 'error',
             });
         } else {
             toast.dark('Welcome ' + response?.data?.registration.user?.name, {
                 type: 'success',
             });
         }
-    };
-
-    const onHandleChange = e => {
-        console.log(e);
     };
 
     return (

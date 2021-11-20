@@ -40,6 +40,8 @@ async function main() {
     type: "mongo",
     debug: !__prod__,
     implicitTransactions: true, // defaults to false
+    ensureIndexes: true, // defaults to false,
+
   });
 
   await orm.em.getDriver().createCollections();

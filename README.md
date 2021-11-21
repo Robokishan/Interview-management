@@ -12,6 +12,9 @@
   <strong>Taking Interview Management to the moon 🚀</strong>
 </p>
 <p align="center">
+  <strong>This Project is for learning Graphql, Test cases and scalable architecture</strong>
+</p>
+<p align="center">
 Feel free to make contribution only <strong>Good code practices</strong> are alowed
 </p>
 </p>

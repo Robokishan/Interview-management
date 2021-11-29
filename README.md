@@ -2,7 +2,7 @@
   <strong>Made with</strong>
 </p>
 <a href="http://kishanjoshi.dev"><p align="center">
-<img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/graphql.png"/>
+<img height=100 src="/img/graphql.png"/>
 <img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/nodejs.png"/>
 <img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/react.png"/>
 <img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/typescript.png"/>

@@ -2,11 +2,11 @@
   <strong>Made with</strong>
 </p>
 <a href="http://kishanjoshi.dev"><p align="center">
-<img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/graphql.png"/>
-<img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/nodejs.png"/>
-<img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/react.png"/>
-<img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/typescript.png"/>
-<img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/mongodb.png"/>
+<img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/graphql.png"/>
+<img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/nodejs.png"/>
+<img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/react.png"/>
+<img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/typescript.png"/>
+<img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/mongodb.png"/>
 </p></a>
 <p align="center">
   <strong>Taking Interview Management to the moon 🚀</strong>
@@ -22,7 +22,7 @@ Feel free to make contribution only <strong>Good code practices</strong> are alo
   <strong>Deploy with</strong>
 </p>
 <a href="#"><p align="center">
-<img height=100 src="https://raw.githubusercontent.com/Robokishan/Campus-placement-app/main/img/docker.png"/>
+<img height=100 src="https://raw.githubusercontent.com/Robokishan/Interview-management/main/img/docker.png"/>
 </p></a>
 
 ---

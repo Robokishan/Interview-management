@@ -13,7 +13,7 @@ var initApp = function () {
   app.use(cookieParser());
   // Define a health check endpoint
   app.get("/healthz", (_req: Request, res: Response) => {
-    res.status(200).send("OK 1.4");
+    res.status(200).send("OK 1.5");
   });
   console.log("version:", process.env.NODE_ENV);
   return app;

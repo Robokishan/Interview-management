@@ -1,0 +1,31 @@
+# for frontend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: interview-frontend-service
+  namespace: interview-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: interview-frontend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5051
+      targetPort: 80
+---
+# for backend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: interview-backend-service
+  namespace: interview-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: interview-backend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5050
+      targetPort: 8081
